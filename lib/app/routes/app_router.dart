@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nikaay/features/splash/splash_screen.dart';
 import 'route_names.dart';
+import '../../features/onboarding/onboarding_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -13,9 +14,7 @@ class AppRouter {
       ),
       GoRoute(
         path: RouteNames.onboarding,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text("Onboarding Screen Placeholder")),
-        ),
+        builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
         path: RouteNames.login,

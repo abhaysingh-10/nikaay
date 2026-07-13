@@ -72,6 +72,7 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: Stack(
         children: [
+          // splash bg
           Positioned.fill(
             child: Image.asset(
               'assets/splash/splash_bg.png',
@@ -79,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
           Align(
-            alignment: const Alignment(0, -0.60),
+            alignment: const Alignment(0, -0.60), //
             child: FadeTransition(
               opacity: _fadeAnimation,
               child: ScaleTransition(
