@@ -48,3 +48,12 @@ app.*.map.json
 
 # Mentor Config
 .agent
+
+# Environment Secrets
+.env
+.env.*
+*.env
+db.sqlite3
+*service-account*.json
+firebase-*.json
+*.credential.json
