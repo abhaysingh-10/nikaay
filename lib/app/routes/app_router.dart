@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nikaay/features/splash/splash_screen.dart';
 import 'route_names.dart';
 
 class AppRouter {
@@ -8,9 +9,7 @@ class AppRouter {
     routes: [
       GoRoute(
         path: RouteNames.splash,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text("Splash Screen Placeholder")),
-        ),
+        builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
         path: RouteNames.onboarding,
