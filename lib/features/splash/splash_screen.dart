@@ -16,9 +16,12 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
 
+  bool _isOnboardingCompleted = false; // ..  => onboard changes
+
   @override
   void initState() {
     super.initState();
+    _loadOnboardingStatus(); // ..
 
     // 1. Initialize the Animation Controller
     _controller = AnimationController(
@@ -43,18 +46,31 @@ class _SplashScreenState extends State<SplashScreen>
     _navigateToNextScreen();
   }
 
+  //..
+  Future<void> _loadOnboardingStatus() async {
+    final completed = await PreferencesHelper.isOnboardingCompleted();
+    if (mounted) {
+      setState(() {
+        _isOnboardingCompleted = completed;
+      });
+      // Speed up animation if onboarding is completed
+      if (completed) {
+        _controller.duration = const Duration(milliseconds: 1000);
+        _controller.forward(from: 0.0);
+      }
+    }
+  }
+
   Future<void> _navigateToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 2));
+    final completed = await PreferencesHelper.isOnboardingCompleted();
+    final delay = completed ? const Duration(seconds: 1) : const Duration(seconds: 2);
+
+    await Future.delayed(delay);
 
     if (!mounted) return;
 
-    // Checking if user has already completed onboarding
-    final isCompleted = await PreferencesHelper.isOnboardingCompleted();
-
-    if (!mounted) return;
-
-    // Navigate to next screen based on status
-    if (isCompleted) {
+    // Navigate to next screen based on status.
+    if (_isOnboardingCompleted) {
       context.go(RouteNames.login);
     } else {
       context.go(RouteNames.onboarding);
@@ -73,14 +89,17 @@ class _SplashScreenState extends State<SplashScreen>
       body: Stack(
         children: [
           // splash bg
-          Positioned.fill(
-            child: Image.asset(
-              'assets/splash/splash_bg.png',
-              fit: BoxFit.cover,
+          if (!_isOnboardingCompleted) //..
+            Positioned.fill(
+              child: Image.asset(
+                'assets/splash/splash_bg.png',
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
           Align(
-            alignment: const Alignment(0, -0.60), //
+            alignment: _isOnboardingCompleted
+                ? const Alignment(0, -0.25)
+                : const Alignment(0, -0.60), //..
             child: FadeTransition(
               opacity: _fadeAnimation,
               child: ScaleTransition(
