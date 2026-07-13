@@ -94,4 +94,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# CORS Configuration for local Flutter development
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Django REST Framework Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'common.authentication.firebase_authentication.FirebaseAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
