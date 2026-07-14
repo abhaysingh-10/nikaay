@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "770982888986",
+    "project_id": "nikaay-app",
+    "storage_bucket": "nikaay-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770982888986:android:92ba85290556c44f10b3a3",
+        "android_client_info": {
+          "package_name": "com.example.nikaay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB99_wkx__JjIPrwK-l2HhNK0r4l739QW4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
