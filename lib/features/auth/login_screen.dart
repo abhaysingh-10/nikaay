@@ -46,7 +46,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
 
-
           // 3. Login form content
           SafeArea(
             child: Center(
@@ -60,15 +59,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       // Heading Section
                       Text(
-                        'Welcome Back ',
+                        'Welcome Back',
                         style: AppTextStyles.heroTitle,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Login to continue your skincare journey with Nikaay',
-                        style: AppTextStyles.subtitle.copyWith(fontSize: 15),
+                        'Personalized skincare, made simple.',
+                        style: AppTextStyles.subtitle.copyWith(fontSize: 14),
                       ),
-                      const SizedBox(height: 36),
+                      const SizedBox(height: 28),
 
                       // Email Field Label & Input
                       Text(

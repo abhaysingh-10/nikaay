@@ -6,7 +6,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.getInstance().then((prefs) => prefs.clear()); //temp (need to remove afterwards)
 
