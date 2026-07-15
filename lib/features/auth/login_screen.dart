@@ -202,6 +202,56 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 24),
+
+                      // Social Login Divider
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              color: AppColors.secondaryText.withOpacity(0.2),
+                              thickness: 1,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Text(
+                              'Or continue with',
+                              style: AppTextStyles.subtitle.copyWith(
+                                fontSize: 13,
+                                color: AppColors.secondaryText.withOpacity(0.8),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: AppColors.secondaryText.withOpacity(0.2),
+                              thickness: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Social Login Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildSocialButton(
+                            logoPath: 'assets/auth/google.png',
+                            onTap: () {
+                              debugPrint("Google Sign-In Tapped");
+                            },
+                          ),
+                          const SizedBox(width: 20),
+                          _buildSocialButton(
+                            logoPath: 'assets/auth/apple.png',
+                            onTap: () {
+                              debugPrint("Apple Sign-In Tapped");
+                            },
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 32),
 
                       // Sign Up Link
@@ -234,6 +284,35 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSocialButton({
+    required String logoPath,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 56,
+        width: 80,
+        decoration: BoxDecoration(
+          color: AppColors.lightBeige.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: AppColors.primaryGreen.withOpacity(0.1),
+            width: 1,
+          ),
+        ),
+        child: Center(
+          child: Image.asset(
+            logoPath,
+            height: 24,
+            width: 24,
+            fit: BoxFit.contain,
+          ),
+        ),
       ),
     );
   }
