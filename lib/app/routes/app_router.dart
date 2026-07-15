@@ -4,6 +4,7 @@ import 'route_names.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/auth/login_screen.dart';
+import '../../features/auth/signup_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -23,9 +24,7 @@ class AppRouter {
       ),
       GoRoute(
         path: RouteNames.signup,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text("Signup Screen Placeholder")),
-        ),
+        builder: (context, state) => const SignupScreen(),
       ),
       GoRoute(
         path: RouteNames.home,
