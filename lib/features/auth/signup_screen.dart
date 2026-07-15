@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/routes/route_names.dart';
 import '../../app/theme/app_colors.dart';
@@ -103,6 +104,9 @@ class _SignupScreenState extends State<SignupScreen> {
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
+                physics: MediaQuery.of(context).viewInsets.bottom > 0
+                    ? const ClampingScrollPhysics()
+                    : const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(24.0, 50.0, 24.0, 24.0),
                 child: Form(
                   key: _formKey,
@@ -179,10 +183,14 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                         validator: (value) {
-                          if (value == null || value.isEmpty)
+                          if (value == null || value.isEmpty) {
                             return 'Please enter a password';
-                          if (value.length < 6)
+                          }
+
+                          if (value.length < 6) {
                             return 'Password must be at least 6 characters long';
+                          }
+
                           return null;
                         },
                       ),
@@ -210,10 +218,12 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                         validator: (value) {
-                          if (value == null || value.isEmpty)
+                          if (value == null || value.isEmpty) {
                             return 'Please confirm your password';
-                          if (value != _passwordController.text)
+                          }
+                          if (value != _passwordController.text) {
                             return 'Passwords do not match';
+                          }
                           return null;
                         },
                       ),
@@ -270,35 +280,39 @@ class _SignupScreenState extends State<SignupScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           _buildSocialButton(
-                              logoPath: 'assets/auth/google.png', onTap: () {}),
+                            logoPath: 'assets/auth/google.png',
+                            onTap: () {},
+                          ),
                           const SizedBox(width: 16),
                           _buildSocialButton(
-                              logoPath: 'assets/auth/apple.png', onTap: () {}),
+                            logoPath: 'assets/auth/apple.png',
+                            onTap: () {},
+                          ),
                         ],
                       ),
                       const SizedBox(height: 28),
                       Center(
-                        child: TextButton(
-                          onPressed: () => context.go(RouteNames.login),
-                          child: RichText(
-                            text: TextSpan(
-                              text: "Already have an account? ",
-                              style: AppTextStyles.subtitle.copyWith(
-                                fontSize: 13,
-                                color:
-                                    AppColors.secondaryText.withOpacity(0.75),
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: 'Login',
-                                  style: AppTextStyles.bodyText.copyWith(
-                                    color: AppColors.primaryGreen,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                        child: RichText(
+                          text: TextSpan(
+                            text: "Already have an account? ",
+                            style: AppTextStyles.subtitle.copyWith(
+                              fontSize: 13,
+                              color: AppColors.secondaryText.withOpacity(0.75),
                             ),
+                            children: [
+                              TextSpan(
+                                text: 'Login',
+                                style: AppTextStyles.bodyText.copyWith(
+                                  color: AppColors.primaryGreen,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    context.go(RouteNames.login);
+                                  },
+                              ),
+                            ],
                           ),
                         ),
                       ),
