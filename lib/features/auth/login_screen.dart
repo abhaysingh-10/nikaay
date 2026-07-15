@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/routes/route_names.dart';
 import '../../app/theme/app_colors.dart';
@@ -256,24 +257,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // Sign Up Link
                       Center(
-                        child: TextButton(
-                          onPressed: () => context.go(RouteNames.signup),
-                          child: RichText(
-                            text: TextSpan(
-                              text: "Don't have an account? ",
-                              style:
-                                  AppTextStyles.subtitle.copyWith(fontSize: 14),
-                              children: [
-                                TextSpan(
-                                  text: 'Sign Up',
-                                  style: AppTextStyles.bodyText.copyWith(
-                                    color: AppColors.primaryGreen,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                        child: RichText(
+                          text: TextSpan(
+                            text: "Don't have an account? ",
+                            style: AppTextStyles.subtitle.copyWith(fontSize: 14),
+                            children: [
+                              TextSpan(
+                                text: 'Sign Up',
+                                style: AppTextStyles.bodyText.copyWith(
+                                  color: AppColors.primaryGreen,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              ],
-                            ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    context.go(RouteNames.signup);
+                                  },
+                              ),
+                            ],
                           ),
                         ),
                       ),
