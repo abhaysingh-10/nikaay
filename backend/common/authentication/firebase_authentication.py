@@ -52,8 +52,7 @@ class FirebaseAuthentication(authentication.BaseAuthentication):
 
         if not uid or not email:
             raise exceptions.AuthenticationFailed('Firebase Token missing required claims (uid/email).')
-
-        # Link Firebase UID to Django's User. We use the UID as username (max 150 chars).
+        
         user, created = User.objects.get_or_create(
             username=uid,
             defaults={'email': email}
