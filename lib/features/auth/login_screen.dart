@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dio/dio.dart';
 import '../../app/routes/route_names.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
+import 'providers/auth_providers.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -25,16 +29,147 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _onLoginPressed() {
+  void _onLoginPressed() async {
     if (_formKey.currentState!.validate()) {
-      // Auth logic will be connected in Task 3.
-      debugPrint("Email: ${_emailController.text}");
-      debugPrint("Password: ${_passwordController.text}");
+      await ref.read(authControllerProvider.notifier).login(
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+          );
     }
+  }
+
+  void _onForgotPasswordPressed() {
+    final emailTextController = TextEditingController();
+    
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppColors.mainBackground,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'Reset Password',
+            style: AppTextStyles.sectionTitle.copyWith(fontSize: 20),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Enter your email address and we will send you a link to reset your password.',
+                style: AppTextStyles.subtitle.copyWith(fontSize: 14),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: emailTextController,
+                keyboardType: TextInputType.emailAddress,
+                style: AppTextStyles.bodyText,
+                decoration: InputDecoration(
+                  hintText: 'Enter your email',
+                  hintStyle: AppTextStyles.subtitle.copyWith(
+                      color: AppColors.secondaryText.withOpacity(0.5)),
+                  filled: true,
+                  fillColor: AppColors.lightBeige,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Cancel',
+                style: AppTextStyles.bodyText.copyWith(
+                  color: AppColors.secondaryText,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final email = emailTextController.text.trim();
+                if (email.isNotEmpty) {
+                  final messenger = ScaffoldMessenger.of(context);
+                  Navigator.pop(context);
+                  await ref
+                      .read(authControllerProvider.notifier)
+                      .forgotPassword(email);
+                  
+                  messenger.showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'Password reset email sent. Please check your inbox.'),
+                      backgroundColor: AppColors.success,
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryGreen,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'Send Link',
+                style: AppTextStyles.buttonText.copyWith(fontSize: 14),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  String _mapAuthError(Object error) {
+    if (error is FirebaseAuthException) {
+      switch (error.code) {
+        case 'invalid-credential':
+        case 'user-not-found':
+        case 'wrong-password':
+          return 'The email or password you entered is incorrect.';
+        case 'invalid-email':
+          return 'Please enter a valid email address.';
+        case 'user-disabled':
+          return 'This user account has been disabled.';
+        case 'too-many-requests':
+          return 'Too many attempts. Please try again later.';
+        case 'network-request-failed':
+          return 'Network error. Please check your internet connection.';
+        default:
+          return error.message ?? 'Authentication failed. Please try again.';
+      }
+    }
+    if (error is DioException) {
+      return 'Failed to sync with the server. Please verify the backend is running.';
+    }
+    return error.toString();
   }
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authControllerProvider);
+
+    ref.listen<AsyncValue<void>>(authControllerProvider, (previous, next) {
+      next.whenOrNull(
+        error: (error, stackTrace) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_mapAuthError(error)),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        },
+      );
+    });
+
     return Scaffold(
       backgroundColor: AppColors.mainBackground,
       body: Stack(
@@ -81,6 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _emailController,
+                        enabled: !authState.isLoading,
                         keyboardType: TextInputType.emailAddress,
                         style: AppTextStyles.bodyText,
                         decoration: InputDecoration(
@@ -90,8 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintStyle: AppTextStyles.subtitle.copyWith(
                               color: AppColors.secondaryText.withOpacity(0.5)),
                           filled: true,
-                          fillColor: AppColors.lightBeige.withOpacity(
-                              0.8), // Slightly transparent to let bg show through
+                          fillColor: AppColors.lightBeige.withOpacity(0.8),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
                             borderSide: BorderSide.none,
@@ -123,6 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _passwordController,
+                        enabled: !authState.isLoading,
                         obscureText: !_isPasswordVisible,
                         style: AppTextStyles.bodyText,
                         decoration: InputDecoration(
@@ -145,8 +281,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintStyle: AppTextStyles.subtitle.copyWith(
                               color: AppColors.secondaryText.withOpacity(0.5)),
                           filled: true,
-                          fillColor: AppColors.lightBeige
-                              .withOpacity(0.8), // Slightly transparent
+                          fillColor: AppColors.lightBeige.withOpacity(0.8),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
                             borderSide: BorderSide.none,
@@ -169,9 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Align(
                         alignment: Alignment.topRight,
                         child: TextButton(
-                          onPressed: () {
-                            // Forgot password logic will be added in Task 3
-                          },
+                          onPressed: authState.isLoading ? null : _onForgotPasswordPressed,
                           child: Text(
                             'Forgot Password?',
                             style: AppTextStyles.bodyText.copyWith(
@@ -189,7 +322,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
-                          onPressed: _onLoginPressed,
+                          onPressed: authState.isLoading ? null : _onLoginPressed,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primaryGreen,
                             elevation: 0,
@@ -197,10 +330,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(28),
                             ),
                           ),
-                          child: Text(
-                            'Login',
-                            style: AppTextStyles.buttonText,
-                          ),
+                          child: authState.isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Text(
+                                  'Login',
+                                  style: AppTextStyles.buttonText,
+                                ),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -240,16 +382,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           _buildSocialButton(
                             logoPath: 'assets/auth/google.png',
-                            onTap: () {
-                              debugPrint("Google Sign-In Tapped");
-                            },
+                            onTap: authState.isLoading
+                                ? () {}
+                                : () {
+                                    debugPrint("Google Sign-In Tapped");
+                                  },
                           ),
                           const SizedBox(width: 20),
                           _buildSocialButton(
                             logoPath: 'assets/auth/apple.png',
-                            onTap: () {
-                              debugPrint("Apple Sign-In Tapped");
-                            },
+                            onTap: authState.isLoading
+                                ? () {}
+                                : () {
+                                    debugPrint("Apple Sign-In Tapped");
+                                  },
                           ),
                         ],
                       ),
@@ -270,9 +416,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    context.go(RouteNames.signup);
-                                  },
+                                  ..onTap = authState.isLoading
+                                      ? null
+                                      : () {
+                                          context.go(RouteNames.signup);
+                                        },
                               ),
                             ],
                           ),
@@ -318,3 +466,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
