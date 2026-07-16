@@ -4,11 +4,11 @@ PODS:
     - FirebaseAuth (~> 12.15.0)
   - Firebase/CoreOnly (12.15.0):
     - FirebaseCore (~> 12.15.0)
-  - firebase_auth (6.5.5):
+  - firebase_auth (6.5.6):
     - Firebase/Auth (= 12.15.0)
     - firebase_core
     - Flutter
-  - firebase_core (4.12.0):
+  - firebase_core (4.12.1):
     - Firebase/CoreOnly (= 12.15.0)
     - Flutter
   - FirebaseAppCheckInterop (12.15.0)
@@ -89,8 +89,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Firebase: a8539b633d474fbeb654c7043f9c1649e274045b
-  firebase_auth: 2dfb3db3c0c65d21eb2e11f9740f67043b8af256
-  firebase_core: 684edaddeb160c68276403e0f21fe7095b0c94c7
+  firebase_auth: 219da41caaff7c485ff48eb463eb04710b18bcfa
+  firebase_core: 1c1e250a77e2df9e80bb8bf0875c8b427044a697
   FirebaseAppCheckInterop: 5083c9acf65f206832fe659e1c676b7bc3d55e8a
   FirebaseAuth: 6d1d4e5875d93f82e669bee6b05a70a642025b58
   FirebaseAuthInterop: 0778f5f24d6cccd6d67ef45832fe9c67a0b944ea
