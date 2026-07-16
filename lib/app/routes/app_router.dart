@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'route_names.dart';
+import 'navigation_shell_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/auth/login_screen.dart';
@@ -76,11 +77,60 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteNames.signup,
         builder: (context, state) => const SignupScreen(),
       ),
-      GoRoute(
-        path: RouteNames.home,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text("Home Dashboard Placeholder")),
-        ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return NavigationShellScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.home,
+                builder: (context, state) => const Scaffold(
+                  body: Center(child: Text("Home Dashboard Placeholder")),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.chat,
+                builder: (context, state) => const Scaffold(
+                  body: Center(child: Text("AI Chat Placeholder")),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.history,
+                builder: (context, state) => const Scaffold(
+                  body: Center(child: Text("History Placeholder")),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.profile,
+                builder: (context, state) => const Scaffold(
+                  body: Center(child: Text("Profile Placeholder")),
+                ),
+                routes: [
+                  GoRoute(
+                    path: RouteNames.settings,
+                    builder: (context, state) => const Scaffold(
+                      body: Center(child: Text("Settings Placeholder")),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );
