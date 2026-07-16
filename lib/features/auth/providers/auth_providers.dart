@@ -53,12 +53,11 @@ class AuthController extends AsyncNotifier<void> {
       final user = userCredential.user;
       if (user != null) {
         try {
-          // 2. Update display name in Firebase Auth
-          await user.updateDisplayName(name);
-          await user.reload(); // Apply changes
-
-          // 3. Sync profile with Django backend
-          await _syncProfileWithBackend(fullName: name);
+          // 2 & 3. Run Firebase name update and Django sync in parallel
+          await Future.wait([
+            user.updateDisplayName(name).then((_) => user.reload()),
+            _syncProfileWithBackend(fullName: name),
+          ]);
         } catch (e) {
           // Force sign out from Firebase if sync/setup fails
           await _auth.signOut();
