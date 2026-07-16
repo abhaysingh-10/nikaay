@@ -13,9 +13,7 @@ void main() async {
   final runCount = prefs.getInt('temp_testing_run_count') ?? 0;
   final nextRunCount = runCount + 1;
   await prefs.setInt('temp_testing_run_count', nextRunCount);
-
   if (nextRunCount % 2 == 1) {
-    
     await prefs.setBool('onboarding_completed', false);
   } else {
     await prefs.setBool('onboarding_completed', true);
