@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dio/dio.dart';
 import '../../app/routes/route_names.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
+import 'providers/auth_providers.dart';
 
-class SignupScreen extends StatefulWidget {
+class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  ConsumerState<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -31,11 +35,13 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  void _onSignupPressed() {
+  void _onSignupPressed() async {
     if (_formKey.currentState!.validate()) {
-      debugPrint("Name: ${_nameController.text}");
-      debugPrint("Email: ${_emailController.text}");
-      debugPrint("Password: ${_passwordController.text}");
+      await ref.read(authControllerProvider.notifier).signup(
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+            _nameController.text.trim(),
+          );
     }
   }
 
@@ -92,8 +98,46 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
+  String _mapAuthError(Object error) {
+    if (error is FirebaseAuthException) {
+      switch (error.code) {
+        case 'email-already-in-use':
+          return 'The email address is already in use by another account.';
+        case 'invalid-email':
+          return 'Please enter a valid email address.';
+        case 'operation-not-allowed':
+          return 'Email/password accounts are not enabled.';
+        case 'weak-password':
+          return 'The password is too weak. Please use a stronger password.';
+        case 'network-request-failed':
+          return 'Network error. Please check your internet connection.';
+        default:
+          return error.message ?? 'Registration failed. Please try again.';
+      }
+    }
+    if (error is DioException) {
+      return 'Failed to sync with the server. Please verify the backend is running.';
+    }
+    return error.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authControllerProvider);
+
+    ref.listen<AsyncValue<void>>(authControllerProvider, (previous, next) {
+      next.whenOrNull(
+        error: (error, stackTrace) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_mapAuthError(error)),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        },
+      );
+    });
+
     return Scaffold(
       backgroundColor: AppColors.mainBackground,
       body: Stack(
@@ -129,6 +173,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _nameController,
+                        enabled: !authState.isLoading,
                         keyboardType: TextInputType.name,
                         style: AppTextStyles.bodyText.copyWith(fontSize: 14),
                         decoration: _fieldDecoration(
@@ -144,6 +189,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _emailController,
+                        enabled: !authState.isLoading,
                         keyboardType: TextInputType.emailAddress,
                         style: AppTextStyles.bodyText.copyWith(fontSize: 14),
                         decoration: _fieldDecoration(
@@ -151,8 +197,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           icon: Icons.mail_outline,
                         ),
                         validator: (value) {
-                          if (value == null || value.isEmpty)
+                          if (value == null || value.isEmpty) {
                             return 'Please enter your email';
+                          }
                           if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
                               .hasMatch(value)) {
                             return 'Please enter a valid email address';
@@ -165,6 +212,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _passwordController,
+                        enabled: !authState.isLoading,
                         obscureText: !_isPasswordVisible,
                         style: AppTextStyles.bodyText.copyWith(fontSize: 14),
                         decoration: _fieldDecoration(
@@ -199,6 +247,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _confirmPasswordController,
+                        enabled: !authState.isLoading,
                         obscureText: !_isConfirmPasswordVisible,
                         style: AppTextStyles.bodyText.copyWith(fontSize: 14),
                         decoration: _fieldDecoration(
@@ -232,7 +281,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         width: double.infinity,
                         height: 54,
                         child: ElevatedButton(
-                          onPressed: _onSignupPressed,
+                          onPressed:
+                              authState.isLoading ? null : _onSignupPressed,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primaryGreen,
                             foregroundColor: Colors.white,
@@ -248,8 +298,17 @@ class _SignupScreenState extends State<SignupScreen> {
                                   states.contains(WidgetState.pressed) ? 0 : 2,
                             ),
                           ),
-                          child:
-                              Text('Sign Up', style: AppTextStyles.buttonText),
+                          child: authState.isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Text('Sign Up',
+                                  style: AppTextStyles.buttonText),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -281,12 +340,20 @@ class _SignupScreenState extends State<SignupScreen> {
                         children: [
                           _buildSocialButton(
                             logoPath: 'assets/auth/google.png',
-                            onTap: () {},
+                            onTap: authState.isLoading
+                                ? () {}
+                                : () {
+                                    debugPrint("Google Sign Up Tapped");
+                                  },
                           ),
                           const SizedBox(width: 16),
                           _buildSocialButton(
                             logoPath: 'assets/auth/apple.png',
-                            onTap: () {},
+                            onTap: authState.isLoading
+                                ? () {}
+                                : () {
+                                    debugPrint("Apple Sign Up Tapped");
+                                  },
                           ),
                         ],
                       ),
@@ -308,9 +375,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    context.go(RouteNames.login);
-                                  },
+                                  ..onTap = authState.isLoading
+                                      ? null
+                                      : () {
+                                          context.go(RouteNames.login);
+                                        },
                               ),
                             ],
                           ),
@@ -328,7 +397,9 @@ class _SignupScreenState extends State<SignupScreen> {
             left: 16,
             child: SafeArea(
               child: InkWell(
-                onTap: () => context.go(RouteNames.login),
+                onTap: authState.isLoading
+                    ? null
+                    : () => context.go(RouteNames.login),
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
                   padding: const EdgeInsets.all(10),
