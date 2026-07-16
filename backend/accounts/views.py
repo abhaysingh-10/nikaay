@@ -11,19 +11,29 @@ class ProfileSyncView(APIView):
     def post(self, request):
         user = request.user
         email = user.email
-        uid = user.username  # Firebase UID is stored as the username in Django
+        uid = user.username  
         full_name = request.data.get('full_name', '')
 
-        # Get or create the UserProfile record linked to this Firebase UID
-        profile, created = UserProfile.objects.get_or_create(
-            firebase_uid=uid,
-            defaults={
-                'email': email,
-                'full_name': full_name
-            }
-        )
+        
+        try:
+            profile = UserProfile.objects.get(firebase_uid=uid)
+            created = False
+        except UserProfile.DoesNotExist:
+            
+            try:
+                existing_profile = UserProfile.objects.get(email=email)
+               
+                existing_profile.delete()
+            except UserProfile.DoesNotExist:
+                pass
+            
+            profile = UserProfile.objects.create(
+                firebase_uid=uid,
+                email=email,
+                full_name=full_name
+            )
+            created = True
 
-        # Update the full name if it has been updated in request data
         if not created and full_name and profile.full_name != full_name:
             profile.full_name = full_name
             profile.save()
