@@ -45,6 +45,7 @@ class FirebaseAuthentication(authentication.BaseAuthentication):
             # Verify the Firebase ID Token
             decoded_token = auth.verify_id_token(token)
         except Exception as e:
+            print(f"\n[Firebase Auth Error] token verification failed: {e}\n")
             raise exceptions.AuthenticationFailed(f'Invalid Firebase Token: {str(e)}')
 
         uid = decoded_token.get('uid')
@@ -52,7 +53,6 @@ class FirebaseAuthentication(authentication.BaseAuthentication):
 
         if not uid or not email:
             raise exceptions.AuthenticationFailed('Firebase Token missing required claims (uid/email).')
-        
         user, created = User.objects.get_or_create(
             username=uid,
             defaults={'email': email}
