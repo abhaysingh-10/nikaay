@@ -1,14 +1,64 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'route_names.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/signup_screen.dart';
+import '../../features/auth/providers/auth_providers.dart';
+import '../../core/storage/preferences_helper.dart';
 
-class AppRouter {
-  static final GoRouter router = GoRouter(
+class GoRouterRefreshStream extends ChangeNotifier {
+  late final StreamSubscription<dynamic> _subscription;
+
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+          (dynamic _) => notifyListeners(),
+        );
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
+
+final routerProvider = Provider<GoRouter>((ref) {
+  final authStream = ref.watch(firebaseAuthProvider).authStateChanges();
+
+  return GoRouter(
     initialLocation: RouteNames.splash,
+    refreshListenable: GoRouterRefreshStream(authStream),
+    redirect: (context, state) async {
+      final isLoggedIn = ref.read(firebaseAuthProvider).currentUser != null;
+      final onboardingCompleted =
+          await PreferencesHelper.isOnboardingCompleted();
+
+      final isSplash = state.matchedLocation == RouteNames.splash;
+      final isOnboarding = state.matchedLocation == RouteNames.onboarding;
+      final isLogin = state.matchedLocation == RouteNames.login;
+      final isSignup = state.matchedLocation == RouteNames.signup;
+
+      if (isSplash) return null;
+
+      if (!isLoggedIn) {
+        if (!onboardingCompleted) {
+          if (!isOnboarding) return RouteNames.onboarding;
+        } else {
+          if (!isLogin && !isSignup) return RouteNames.login;
+        }
+      } else {
+        if (isOnboarding || isLogin || isSignup) {
+          return RouteNames.home;
+        }
+      }
+
+      return null;
+    },
     routes: [
       GoRoute(
         path: RouteNames.splash,
@@ -34,4 +84,4 @@ class AppRouter {
       ),
     ],
   );
-}
+});
