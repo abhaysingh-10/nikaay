@@ -14,7 +14,6 @@ class HomeScreen extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
     final user = authState.value;
     final displayName = user?.displayName ?? 'Ananya';
-    // Extract first name only
     final firstName = displayName.trim().split(' ').first;
 
     return Scaffold(
@@ -26,7 +25,6 @@ class HomeScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Chunk 1: Welcome Header Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -52,7 +50,6 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  // Notification Bell with Badge
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -62,9 +59,7 @@ class HomeScreen extends ConsumerWidget {
                           color: AppColors.primaryText,
                           size: 28,
                         ),
-                        onPressed: () {
-                          // Notifications action placeholder
-                        },
+                        onPressed: () {},
                       ),
                       Positioned(
                         right: 12,
@@ -87,8 +82,6 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 24),
-
-              // Chunk 2: Skin Assessment Hero Card
               Container(
                 width: double.infinity,
                 height: 160,
@@ -114,7 +107,6 @@ class HomeScreen extends ConsumerWidget {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // Left Text and Button Content
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 12.0),
@@ -146,9 +138,7 @@ class HomeScreen extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 10),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    // Action placeholder
-                                  },
+                                  onPressed: () {},
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
                                     foregroundColor: AppColors.primaryGreen,
@@ -187,7 +177,6 @@ class HomeScreen extends ConsumerWidget {
                               ],
                             ),
                           ),
-                          // Right space placeholder for Stack alignment
                           const Expanded(
                             flex: 45,
                             child: SizedBox(),
@@ -195,7 +184,6 @@ class HomeScreen extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    // Right Product Illustration Image
                     Positioned(
                       right: -10,
                       bottom: -15,
@@ -211,8 +199,6 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Chunk 3: Quick Actions Header
               Text(
                 'Quick Actions',
                 style: GoogleFonts.playfairDisplay(
@@ -222,7 +208,6 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-
               Column(
                 children: [
                   Row(
@@ -282,6 +267,71 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: 24),
+              Container(
+                width: double.infinity,
+                height: 90,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFAF2E6),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFFEEDFCB).withValues(alpha: 0.5),
+                    width: 1,
+                  ),
+                ),
+                child: InkWell(
+                  onTap: () => _showPromoDialog(context),
+                  borderRadius: BorderRadius.circular(20),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Flat 20% OFF on New Launch!',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryText,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Use code: NIKAAY20',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primaryGreen,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Image.asset(
+                            'assets/illustration/promo_prod.png',
+                            height: 100,
+                            width: 110,
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(width: 0),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            size: 25,
+                            color:
+                                AppColors.secondaryText.withValues(alpha: 0.8),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -324,7 +374,6 @@ class HomeScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Round Icon Container
                 Container(
                   width: 48,
                   height: 48,
@@ -364,7 +413,6 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // Interactivity Sheets
   void _showEducationSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -499,6 +547,39 @@ class HomeScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showPromoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Text(
+          'Promo Code Activated!',
+          style: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryText,
+          ),
+        ),
+        content: Text(
+          'Use code NIKAAY20 at checkout to get flat 20% off on all organic face serums!',
+          style: GoogleFonts.inter(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Awesome',
+              style: GoogleFonts.inter(
+                color: AppColors.primaryGreen,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
