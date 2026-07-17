@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+import '../../app/routes/route_names.dart';
 import '../../app/theme/app_colors.dart';
 import '../auth/providers/auth_providers.dart';
 
@@ -86,11 +88,10 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
 
-              // Chunk 2: Skin Assessment Hero Card (Slightly adjusted height to prevent bottom overflows)
+              // Chunk 2: Skin Assessment Hero Card
               Container(
                 width: double.infinity,
-                height:
-                    160, // Increased slightly from 152 to 160 to provide safe buffer against vertical text overflows
+                height: 160,
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
@@ -98,8 +99,8 @@ class HomeScreen extends ConsumerWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xFF6F9972), // Soft Sage green
-                      Color(0xFF3F7D3B), // Deep Green
+                      Color(0xFF6F9972),
+                      Color(0xFF3F7D3B),
                     ],
                   ),
                   boxShadow: [
@@ -116,9 +117,7 @@ class HomeScreen extends ConsumerWidget {
                     // Left Text and Button Content
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0,
-                          vertical:
-                              12.0), // Reduced vertical padding from 14 to 12
+                          horizontal: 20.0, vertical: 12.0),
                       child: Row(
                         children: [
                           Expanded(
@@ -130,8 +129,7 @@ class HomeScreen extends ConsumerWidget {
                                 Text(
                                   'Start Your\nSkin Assessment',
                                   style: GoogleFonts.playfairDisplay(
-                                    fontSize:
-                                        19.5, // Extremely minor font size tweak for overflow protection
+                                    fontSize: 19.5,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     height: 1.2,
@@ -146,8 +144,7 @@ class HomeScreen extends ConsumerWidget {
                                     height: 1.3,
                                   ),
                                 ),
-                                const SizedBox(
-                                    height: 10), // Reduced from 12 to 10
+                                const SizedBox(height: 10),
                                 ElevatedButton(
                                   onPressed: () {
                                     // Action placeholder
@@ -203,7 +200,7 @@ class HomeScreen extends ConsumerWidget {
                       right: -10,
                       bottom: -15,
                       top: -15,
-                      width: 170, // Retained at 170 as requested
+                      width: 170,
                       child: Image.asset(
                         'assets/illustration/hero_prod.png',
                         fit: BoxFit.contain,
@@ -213,8 +210,294 @@ class HomeScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 24),
+
+              // Chunk 3: Quick Actions Header
+              Text(
+                'Quick Actions',
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryText,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildActionCard(
+                          context: context,
+                          title: 'AI Chatbot',
+                          subtitle: 'Ask anything',
+                          icon: Icons.auto_awesome,
+                          iconColor: AppColors.primaryGreen,
+                          circleColor: const Color(0xFFE2EFE0),
+                          onTap: () => context.go(RouteNames.chat),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildActionCard(
+                          context: context,
+                          title: 'My History',
+                          subtitle: 'View results',
+                          icon: Icons.assignment_rounded,
+                          iconColor: const Color(0xFFD48B3B),
+                          circleColor: const Color(0xFFFAF2E7),
+                          onTap: () => context.go(RouteNames.history),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildActionCard(
+                          context: context,
+                          title: 'Education',
+                          subtitle: 'Learn more',
+                          icon: Icons.import_contacts_rounded,
+                          iconColor: const Color(0xFF8A5DC9),
+                          circleColor: const Color(0xFFF3EAFB),
+                          onTap: () => _showEducationSheet(context),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildActionCard(
+                          context: context,
+                          title: 'Upload Reports',
+                          subtitle: 'Share documents',
+                          icon: Icons.cloud_upload_rounded,
+                          iconColor: const Color(0xFF3B82F6),
+                          circleColor: const Color(0xFFE6F0FA),
+                          onTap: () => _showUploadReportsSheet(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionCard({
+    required BuildContext context,
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color iconColor,
+    required Color circleColor,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppColors.secondaryText.withValues(alpha: 0.06),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.015),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Round Icon Container
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: circleColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    color: iconColor,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primaryText,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: AppColors.secondaryText,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Interactivity Sheets
+  void _showEducationSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Education & Tips',
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primaryText,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              leading:
+                  const Icon(Icons.science_outlined, color: Color(0xFF8A5DC9)),
+              title: const Text('Understanding Retinoids'),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+              onTap: () => Navigator.pop(context),
+            ),
+            ListTile(
+              leading: const Icon(Icons.water_drop_outlined,
+                  color: Color(0xFF8A5DC9)),
+              title: const Text('Hyaluronic Acid Guide'),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+              onTap: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showUploadReportsSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Upload Skin Reports',
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primaryText,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Upload dermatologist notes or prescriptions to sync with your health profile.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                  color: AppColors.secondaryText, fontSize: 13),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildUploadOption(
+                  icon: Icons.camera_alt_outlined,
+                  label: 'Camera',
+                  onTap: () => Navigator.pop(context),
+                ),
+                _buildUploadOption(
+                  icon: Icons.photo_library_outlined,
+                  label: 'Gallery',
+                  onTap: () => Navigator.pop(context),
+                ),
+                _buildUploadOption(
+                  icon: Icons.picture_as_pdf_outlined,
+                  label: 'PDF Document',
+                  onTap: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUploadOption({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 80,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE6F0FA),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: const Color(0xFF3B82F6), size: 24),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style:
+                  GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500),
+            ),
+          ],
         ),
       ),
     );
