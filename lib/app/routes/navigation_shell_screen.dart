@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_colors.dart';
-import '../theme/app_text_styles.dart';
 
 class NavigationShellScreen extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -26,58 +26,101 @@ class NavigationShellScreen extends StatelessWidget {
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border(
-            top: BorderSide(
-              color: AppColors.secondaryText.withValues(alpha: 0.1),
-              width: 1,
-            ),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 12,
+              offset: const Offset(0, -4),
+            ),
+          ],
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: BottomNavigationBar(
-              currentIndex: navigationShell.currentIndex,
-              onTap: (index) => _onTap(context, index),
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.white,
-              elevation: 0,
-              selectedItemColor: AppColors.primaryGreen,
-              unselectedItemColor:
-                  AppColors.secondaryText.withValues(alpha: 0.6),
-              selectedLabelStyle: AppTextStyles.bodyText.copyWith(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primaryGreen,
-              ),
-              unselectedLabelStyle: AppTextStyles.bodyText.copyWith(
-                fontSize: 12,
-                color: AppColors.secondaryText.withValues(alpha: 0.6),
-              ),
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home_outlined),
-                  activeIcon: Icon(Icons.home),
+          child: SizedBox(
+            height: 58,
+            child: Row(
+              children: [
+                _buildNavItem(
+                  context: context,
+                  index: 0,
+                  activeIcon: Icons.home,
+                  inactiveIcon: Icons.home_outlined,
                   label: 'Home',
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.smart_toy_outlined),
-                  activeIcon: Icon(Icons.smart_toy),
+                _buildNavItem(
+                  context: context,
+                  index: 1,
+                  activeIcon: Icons.smart_toy,
+                  inactiveIcon: Icons.smart_toy_outlined,
                   label: 'AI Chat',
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.history_outlined),
-                  activeIcon: Icon(Icons.history),
+                _buildNavItem(
+                  context: context,
+                  index: 2,
+                  activeIcon: Icons.history,
+                  inactiveIcon: Icons.history_outlined,
                   label: 'History',
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person_outline),
-                  activeIcon: Icon(Icons.person),
+                _buildNavItem(
+                  context: context,
+                  index: 3,
+                  activeIcon: Icons.person,
+                  inactiveIcon: Icons.person_outlined,
                   label: 'Profile',
                 ),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem({
+    required BuildContext context,
+    required int index,
+    required IconData activeIcon,
+    required IconData inactiveIcon,
+    required String label,
+  }) {
+    final isSelected = index == navigationShell.currentIndex;
+    final color = isSelected
+        ? AppColors.primaryGreen
+        : AppColors.secondaryText.withValues(alpha: 0.6);
+    final icon = isSelected ? activeIcon : inactiveIcon;
+
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _onTap(context, index),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedScale(
+              scale: isSelected ? 1.1 : 1.0,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOutCubic,
+              child: Icon(
+                icon,
+                color: color,
+                size: 24,
+              ),
+            ),
+            const SizedBox(height: 3),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOutCubic,
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color: color,
+              ),
+              child: Text(label),
+            ),
+          ],
         ),
       ),
     );
