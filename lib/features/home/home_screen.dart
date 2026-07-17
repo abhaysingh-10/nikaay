@@ -138,7 +138,7 @@ class HomeScreen extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 10),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () => context.push(RouteNames.assessment),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
                                     foregroundColor: AppColors.primaryGreen,

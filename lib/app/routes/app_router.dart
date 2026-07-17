@@ -2,13 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nikaay/features/home/home_screen.dart';
 import 'route_names.dart';
 import 'navigation_shell_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/signup_screen.dart';
+import '../../features/home/home_screen.dart';
+import '../../features/assessment/assessment_quiz_screen.dart';
+import '../../features/assessment/assessment_result_screen.dart';
 import '../../features/auth/providers/auth_providers.dart';
 import '../../core/storage/preferences_helper.dart';
 
@@ -77,6 +79,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.signup,
         builder: (context, state) => const SignupScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.assessment,
+        builder: (context, state) => const AssessmentQuizScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.assessmentResult,
+        builder: (context, state) => const AssessmentResultScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
