@@ -61,8 +61,8 @@ class NavigationShellScreen extends StatelessWidget {
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.chat_bubble_outline),
-                  activeIcon: Icon(Icons.chat_bubble),
+                  icon: Icon(Icons.smart_toy_outlined),
+                  activeIcon: Icon(Icons.smart_toy),
                   label: 'AI Chat',
                 ),
                 BottomNavigationBarItem(
