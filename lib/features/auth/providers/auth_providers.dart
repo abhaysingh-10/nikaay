@@ -8,7 +8,7 @@ final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
 });
 
 final authStateProvider = StreamProvider<User?>((ref) {
-  return ref.watch(firebaseAuthProvider).authStateChanges();
+  return ref.watch(firebaseAuthProvider).userChanges();
 });
 
 class AuthController extends AsyncNotifier<void> {
@@ -93,7 +93,6 @@ class AuthController extends AsyncNotifier<void> {
   }
 }
 
-final authControllerProvider =
-    AsyncNotifierProvider<AuthController, void>(() {
+final authControllerProvider = AsyncNotifierProvider<AuthController, void>(() {
   return AuthController();
 });
