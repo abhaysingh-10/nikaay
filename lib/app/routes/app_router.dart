@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nikaay/features/home/home_screen.dart';
 import 'route_names.dart';
 import 'navigation_shell_screen.dart';
 import '../../features/splash/splash_screen.dart';
@@ -86,9 +87,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: RouteNames.home,
-                builder: (context, state) => const Scaffold(
-                  body: Center(child: Text("Home Dashboard Placeholder")),
-                ),
+                builder: (context, state) => HomeScreen(),
               ),
             ],
           ),
