@@ -1,11 +1,20 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.throttling import ScopedRateThrottle
 from .models import Assessment
 from .serializers import AssessmentSerializer
 from .services.assessment_service import AssessmentService
 
+class AssessmentHourlyThrottle(ScopedRateThrottle):
+    scope = 'assessment_hourly'
+
+class AssessmentDailyThrottle(ScopedRateThrottle):
+    scope = 'assessment_daily'
+
 class AssessmentSubmitView(APIView):
+    throttle_classes = [AssessmentHourlyThrottle, AssessmentDailyThrottle]
+
     def post(self, request):
         answers = request.data
         if not answers:
