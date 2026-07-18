@@ -86,7 +86,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RouteNames.assessmentResult,
-        builder: (context, state) => const AssessmentResultScreen(),
+        builder: (context, state) {
+          final resultData = state.extra as Map<String, dynamic>?;
+          return AssessmentResultScreen(resultData: resultData);
+        },
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

@@ -5,7 +5,12 @@ import '../../app/routes/route_names.dart';
 import '../../app/theme/app_colors.dart';
 
 class AssessmentResultScreen extends StatefulWidget {
-  const AssessmentResultScreen({super.key});
+  final Map<String, dynamic>? resultData;
+
+  const AssessmentResultScreen({
+    super.key,
+    this.resultData,
+  });
 
   @override
   State<AssessmentResultScreen> createState() => _AssessmentResultScreenState();
@@ -22,21 +27,21 @@ class _AssessmentResultScreenState extends State<AssessmentResultScreen> {
   }
 
   void _startAnalysisSimulation() {
-    Future.delayed(const Duration(milliseconds: 1000), () {
+    Future.delayed(const Duration(milliseconds: 800), () {
       if (mounted) {
         setState(() {
           _loadingMessage = 'Matching organic extracts...';
         });
       }
     });
-    Future.delayed(const Duration(milliseconds: 2000), () {
+    Future.delayed(const Duration(milliseconds: 1600), () {
       if (mounted) {
         setState(() {
           _loadingMessage = 'Formulating AM/PM routines...';
         });
       }
     });
-    Future.delayed(const Duration(milliseconds: 3000), () {
+    Future.delayed(const Duration(milliseconds: 2400), () {
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -81,6 +86,35 @@ class _AssessmentResultScreenState extends State<AssessmentResultScreen> {
       );
     }
 
+    final data = widget.resultData;
+    final skinType = data?['predicted_skin_type'] ?? 'Combination Sensitive';
+    final explanation = data?['explanation'] ??
+        'Your skin displays traits of mild oiliness in the T-zone with sensitive areas on the cheeks. We recommend gentle hydration and soothing botanicals.';
+    
+    final amRoutine = data?['am_routine'] != null
+        ? List<String>.from(data!['am_routine'])
+        : [
+            'Gentle Aloe Cleanser (Cleanse)',
+            'Pure Rosewater Toner (Balance)',
+            'Light Herbal Face Lotion (Moisturize & Protect)',
+          ];
+
+    final pmRoutine = data?['pm_routine'] != null
+        ? List<String>.from(data!['pm_routine'])
+        : [
+            'Gentle Aloe Cleanser (Double Cleanse)',
+            'Calming Chamomile Serum (Treat)',
+            'Organic Shea Butter Cream (Deep Nourish)',
+          ];
+
+    final recIngredients = data?['recommended_ingredients'] != null
+        ? List<String>.from(data!['recommended_ingredients'])
+        : ['Aloe Vera', 'Rosehip Oil', 'Chamomile'];
+
+    final avoidIngredients = data?['avoid_ingredients'] != null
+        ? List<String>.from(data!['avoid_ingredients'])
+        : ['Harsh Alcohol', 'Synthetic Color', 'Parabens'];
+
     return Scaffold(
       backgroundColor: AppColors.mainBackground,
       body: SafeArea(
@@ -123,7 +157,7 @@ class _AssessmentResultScreenState extends State<AssessmentResultScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Combination Sensitive',
+                      skinType,
                       style: GoogleFonts.playfairDisplay(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -132,7 +166,7 @@ class _AssessmentResultScreenState extends State<AssessmentResultScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Your skin displays traits of mild oiliness in the T-zone with sensitive areas on the cheeks. We recommend gentle hydration and soothing botanicals.',
+                      explanation,
                       style: GoogleFonts.inter(
                         fontSize: 13,
                         color: AppColors.secondaryText,
@@ -156,22 +190,14 @@ class _AssessmentResultScreenState extends State<AssessmentResultScreen> {
                 title: 'AM Routine',
                 icon: Icons.wb_sunny_rounded,
                 iconColor: const Color(0xFFD48B3B),
-                steps: [
-                  'Gentle Aloe Cleanser (Cleanse)',
-                  'Pure Rosewater Toner (Balance)',
-                  'Light Herbal Face Lotion (Moisturize & Protect)',
-                ],
+                steps: amRoutine,
               ),
               const SizedBox(height: 16),
               _buildRoutineBlock(
                 title: 'PM Routine',
                 icon: Icons.nightlight_round_rounded,
                 iconColor: const Color(0xFF8A5DC9),
-                steps: [
-                  'Gentle Aloe Cleanser (Double Cleanse)',
-                  'Calming Chamomile Serum (Treat)',
-                  'Organic Shea Butter Cream (Deep Nourish)',
-                ],
+                steps: pmRoutine,
               ),
               const SizedBox(height: 24),
               Text(
@@ -215,9 +241,7 @@ class _AssessmentResultScreenState extends State<AssessmentResultScreen> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          _buildIngredientTag('Aloe Vera'),
-                          _buildIngredientTag('Rosehip Oil'),
-                          _buildIngredientTag('Chamomile'),
+                          ...recIngredients.map((item) => _buildIngredientTag(item)),
                         ],
                       ),
                     ),
@@ -241,9 +265,7 @@ class _AssessmentResultScreenState extends State<AssessmentResultScreen> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          _buildIngredientTag('Harsh Alcohol'),
-                          _buildIngredientTag('Synthetic Color'),
-                          _buildIngredientTag('Parabens'),
+                          ...avoidIngredients.map((item) => _buildIngredientTag(item)),
                         ],
                       ),
                     ),

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/routes/route_names.dart';
 import '../../app/theme/app_colors.dart';
+import 'data/assessment_repository.dart';
 
-class AssessmentQuizScreen extends StatefulWidget {
+class AssessmentQuizScreen extends ConsumerStatefulWidget {
   const AssessmentQuizScreen({super.key});
 
   @override
-  State<AssessmentQuizScreen> createState() => _AssessmentQuizScreenState();
+  ConsumerState<AssessmentQuizScreen> createState() => _AssessmentQuizScreenState();
 }
 
-class _AssessmentQuizScreenState extends State<AssessmentQuizScreen> {
+class _AssessmentQuizScreenState extends ConsumerState<AssessmentQuizScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final Map<String, String> _answers = {};
@@ -95,7 +97,7 @@ class _AssessmentQuizScreenState extends State<AssessmentQuizScreen> {
     });
   }
 
-  void _showSubmittingState() {
+  void _showSubmittingState() async {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -110,12 +112,11 @@ class _AssessmentQuizScreenState extends State<AssessmentQuizScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(AppColors.primaryGreen),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryGreen),
               ),
               const SizedBox(height: 24),
               Text(
-                'Analyzing answers...',
+                'Analyzing skin profile with AI...',
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -127,10 +128,27 @@ class _AssessmentQuizScreenState extends State<AssessmentQuizScreen> {
         ),
       ),
     );
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pop(context);
-      context.go(RouteNames.assessmentResult);
-    });
+
+    try {
+      final repository = ref.read(assessmentRepositoryProvider);
+      final response = await repository.submitAssessment(_answers);
+      
+      if (mounted) {
+        Navigator.pop(context);
+        final resultData = response['result'] as Map<String, dynamic>?;
+        context.go(RouteNames.assessmentResult, extra: resultData);
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to perform AI analysis: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -157,8 +175,7 @@ class _AssessmentQuizScreenState extends State<AssessmentQuizScreen> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close,
-                            color: AppColors.primaryText),
+                        icon: const Icon(Icons.close, color: AppColors.primaryText),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ],
@@ -166,10 +183,8 @@ class _AssessmentQuizScreenState extends State<AssessmentQuizScreen> {
                   const SizedBox(height: 8),
                   LinearProgressIndicator(
                     value: (_currentPage + 1) / _questions.length,
-                    backgroundColor:
-                        AppColors.secondaryText.withValues(alpha: 0.1),
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                        AppColors.primaryGreen),
+                    backgroundColor: AppColors.secondaryText.withValues(alpha: 0.1),
+                    valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryGreen),
                     minHeight: 6,
                     borderRadius: BorderRadius.circular(3),
                   ),
@@ -245,8 +260,7 @@ class _AssessmentQuizScreenState extends State<AssessmentQuizScreen> {
                       backgroundColor: AppColors.primaryGreen,
                       foregroundColor: Colors.white,
                       elevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 28, vertical: 14),
+                      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
@@ -280,9 +294,7 @@ class _AssessmentQuizScreenState extends State<AssessmentQuizScreen> {
         color: isSelected ? const Color(0xFFE2EFE0) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isSelected
-              ? AppColors.primaryGreen
-              : AppColors.secondaryText.withValues(alpha: 0.1),
+          color: isSelected ? AppColors.primaryGreen : AppColors.secondaryText.withValues(alpha: 0.1),
           width: isSelected ? 1.5 : 1,
         ),
       ),
