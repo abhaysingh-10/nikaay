@@ -6,7 +6,7 @@ from ..prompts.skin_analysis_prompt import SKIN_ANALYSIS_PROMPT
 class GeminiService:
     @staticmethod
     def analyze_skin(answers):
-        api_key = os.environ.get('GEMINI_API_KEY')
+        api_key = os.environ.get('GEMINI_API_KEY', '').strip()
 
         prompt = SKIN_ANALYSIS_PROMPT.format(
             skin_type=answers.get('skin_type', 'Normal'),
@@ -19,7 +19,7 @@ class GeminiService:
         if not api_key:
             return GeminiService._get_fallback_data(answers)
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={api_key}"
         headers = {"Content-Type": "application/json"}
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
