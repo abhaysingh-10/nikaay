@@ -1,5 +1,6 @@
 import os
 import json
+import re
 import logging
 import requests
 from ..prompts.skin_analysis_prompt import SKIN_ANALYSIS_PROMPT
@@ -38,12 +39,7 @@ class GeminiService:
                 result_json = response.json()
                 text_response = result_json['candidates'][0]['content']['parts'][0]['text']
                 
-                text_response = text_response.strip()
-                if text_response.startswith("```"):
-                    text_response = text_response.split("```")[1]
-                    if text_response.startswith("json"):
-                        text_response = text_response[4:]
-                    text_response = text_response.strip()
+                text_response = re.sub(r'^```(?:json)?\s*|\s*```$', '', text_response.strip())
                 
                 return json.loads(text_response)
             else:
