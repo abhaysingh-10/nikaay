@@ -1,7 +1,10 @@
 import os
 import json
+import logging
 import requests
 from ..prompts.skin_analysis_prompt import SKIN_ANALYSIS_PROMPT
+
+logger = logging.getLogger(__name__)
 
 class GeminiService:
     @staticmethod
@@ -17,6 +20,7 @@ class GeminiService:
         )
 
         if not api_key:
+            logger.warning("No GEMINI_API_KEY found in environment. Using fallback data.")
             return GeminiService._get_fallback_data(answers)
 
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={api_key}"
@@ -33,23 +37,20 @@ class GeminiService:
             if response.status_code == 200:
                 result_json = response.json()
                 text_response = result_json['candidates'][0]['content']['parts'][0]['text']
-                #strip the json 
+                
                 text_response = text_response.strip()
                 if text_response.startswith("```"):
                     text_response = text_response.split("```")[1]
                     if text_response.startswith("json"):
                         text_response = text_response[4:]
-                    
-                    text_response = text_response.strip()   
-                    
-                    
+                    text_response = text_response.strip()
                 
                 return json.loads(text_response)
-                
-            
             else:
+                logger.warning(f"Gemini API returned status {response.status_code}: {response.text[:200]}")
                 return GeminiService._get_fallback_data(answers)
-        except Exception:
+        except Exception as e:
+            logger.error(f"Gemini API call failed: {e}", exc_info=True)
             return GeminiService._get_fallback_data(answers)
 
     @staticmethod
