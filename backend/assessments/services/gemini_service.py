@@ -40,8 +40,22 @@ class GeminiService:
                 text_response = result_json['candidates'][0]['content']['parts'][0]['text']
                 
                 text_response = re.sub(r'^```(?:json)?\s*|\s*```$', '', text_response.strip())
+                parsed = json.loads(text_response)
                 
-                return json.loads(text_response)
+                required_keys = {
+                    "predicted_skin_type",
+                    "explanation",
+                    "am_routine",
+                    "pm_routine",
+                    "recommended_ingredients",
+                    "avoid_ingredients"
+                }
+                
+                if not required_keys.issubset(parsed.keys()):
+                    logger.warning(f"Gemini response missing keys: {required_keys - parsed.keys()}")
+                    return GeminiService._get_fallback_data(answers)
+
+                return parsed
             else:
                 logger.warning(f"Gemini API returned status {response.status_code}: {response.text[:200]}")
                 return GeminiService._get_fallback_data(answers)
