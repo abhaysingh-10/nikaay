@@ -33,7 +33,20 @@ class GeminiService:
             if response.status_code == 200:
                 result_json = response.json()
                 text_response = result_json['candidates'][0]['content']['parts'][0]['text']
+                #strip the json 
+                text_response = text_response.strip()
+                if text_response.startswith("```"):
+                    text_response = text_response.split("```")[1]
+                    if text_response.startswith("json"):
+                        text_response = text_response[4:]
+                    
+                    text_response = text_response.strip()   
+                    
+                    
+                
                 return json.loads(text_response)
+                
+            
             else:
                 return GeminiService._get_fallback_data(answers)
         except Exception:
