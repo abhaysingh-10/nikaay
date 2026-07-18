@@ -84,7 +84,7 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 24),
               Container(
                 width: double.infinity,
-                height: 160,
+                height: 166,
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
@@ -124,7 +124,7 @@ class HomeScreen extends ConsumerWidget {
                                     fontSize: 19.5,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
-                                    height: 1.2,
+                                    height: 1.1,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -136,9 +136,10 @@ class HomeScreen extends ConsumerWidget {
                                     height: 1.3,
                                   ),
                                 ),
-                                const SizedBox(height: 10),
+                                const SizedBox(height: 6),
                                 ElevatedButton(
-                                  onPressed: () => context.push(RouteNames.assessment),
+                                  onPressed: () =>
+                                      context.push(RouteNames.assessment),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
                                     foregroundColor: AppColors.primaryGreen,
