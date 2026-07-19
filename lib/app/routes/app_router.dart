@@ -11,6 +11,7 @@ import '../../features/auth/signup_screen.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/assessment/assessment_quiz_screen.dart';
 import '../../features/assessment/assessment_result_screen.dart';
+import '../../features/chat/presentation/screens/chat_screen.dart';
 import '../../features/auth/providers/auth_providers.dart';
 import '../../core/storage/preferences_helper.dart';
 
@@ -108,9 +109,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: RouteNames.chat,
-                builder: (context, state) => const Scaffold(
-                  body: Center(child: Text("AI Chat Placeholder")),
-                ),
+                builder: (context, state) => const ChatScreen(),
               ),
             ],
           ),
