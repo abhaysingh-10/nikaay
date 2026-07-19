@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/theme/app_colors.dart';
+import '../providers/chat_provider.dart';
+import '../widgets/chat_bubble.dart';
+import '../widgets/typing_indicator.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final chatState = ref.watch(chatProvider);
+
     return Scaffold(
       backgroundColor: AppColors.mainBackground,
       appBar: PreferredSize(
@@ -140,15 +145,18 @@ class ChatScreen extends ConsumerWidget {
           ),
         ),
       ),
-      body: const SafeArea(
-        child: Center(
-          child: Text(
-            'Messages loading...',
-            style: TextStyle(
-              color: AppColors.secondaryText,
-              fontSize: 14,
-            ),
-          ),
+      body: SafeArea(
+        child: ListView.builder(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          itemCount: chatState.messages.length + (chatState.isTyping ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index < chatState.messages.length) {
+              final message = chatState.messages[index];
+              return ChatBubble(message: message);
+            } else {
+              return const TypingIndicator();
+            }
+          },
         ),
       ),
     );
