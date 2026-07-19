@@ -55,6 +55,7 @@ class GeminiService:
                     logger.warning(f"Gemini response missing keys: {required_keys - parsed.keys()}")
                     return GeminiService._get_fallback_data(answers)
 
+                parsed["is_fallback"] = False
                 return parsed
             else:
                 logger.warning(f"Gemini API returned status {response.status_code}: {response.text[:200]}")
@@ -82,5 +83,6 @@ class GeminiService:
                 "Nourishing Shea Moisturizer"
             ],
             "recommended_ingredients": ["Aloe Vera", "Jojoba Oil", "Chamomile"],
-            "avoid_ingredients": ["Parabens", "Harsh Sulfates", "Synthetic Scents"]
+            "avoid_ingredients": ["Parabens", "Harsh Sulfates", "Synthetic Scents"],
+            "is_fallback": True
         }
