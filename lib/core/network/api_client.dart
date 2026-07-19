@@ -1,15 +1,25 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+String _getApiBaseUrl() {
+  const envUrl = String.fromEnvironment('API_BASE_URL');
+  if (envUrl.isNotEmpty) return envUrl;
+
+  if (kIsWeb) {
+    return 'http://localhost:8000/api/v1/';
+  }
+
+  return defaultTargetPlatform == TargetPlatform.android
+      ? 'http://10.0.2.2:8000/api/v1/'
+      : 'http://localhost:8000/api/v1/';
+}
+
 final apiClientProvider = Provider<Dio>((ref) {
   final dio = Dio(
     BaseOptions(
-      baseUrl: Platform.isAndroid
-          ? 'http://10.0.2.2:8000/api/v1/'
-          : 'http://localhost:8000/api/v1/',
+      baseUrl: _getApiBaseUrl(),
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {
@@ -26,7 +36,7 @@ final apiClientProvider = Provider<Dio>((ref) {
         try {
           final user = FirebaseAuth.instance.currentUser;
           if (user != null) {
-            // Get the current Firebase ID Token, 
+            // Get the current Firebase ID Token
             final token = await user.getIdToken();
             if (token != null) {
               options.headers['Authorization'] = 'Bearer $token';
