@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.throttling import ScopedRateThrottle
 from .models import Assessment
-from .serializers import AssessmentSerializer
+from .serializers import AssessmentSerializer, AssessmentInputSerializer
 from .services.assessment_service import AssessmentService
 
 class AssessmentHourlyThrottle(ScopedRateThrottle):
@@ -16,20 +16,20 @@ class AssessmentSubmitView(APIView):
     throttle_classes = [AssessmentHourlyThrottle, AssessmentDailyThrottle]
 
     def post(self, request):
-        answers = request.data
-        if not answers:
+        serializer = AssessmentInputSerializer(data=request.data)
+        if not serializer.is_valid():
             return Response(
-                {"error": "Answers are required"},
+                {"error": "Invalid assessment payload", "details": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
         assessment = AssessmentService.process_and_save_assessment(
             user=request.user,
-            answers=answers
+            answers=serializer.validated_data
         )
         
-        serializer = AssessmentSerializer(assessment)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        output_serializer = AssessmentSerializer(assessment)
+        return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
     def get(self, request):
         assessments = Assessment.objects.filter(user=request.user).order_by('-created_at')
