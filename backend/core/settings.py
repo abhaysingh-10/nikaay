@@ -10,7 +10,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -95,8 +98,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# CORS Configuration for local Flutter development
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS Configuration
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False') == 'True'
+    CORS_ALLOWED_ORIGINS = [o.strip() for o in os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',') if o.strip()]
 
 # Django REST Framework Configuration
 REST_FRAMEWORK = {
