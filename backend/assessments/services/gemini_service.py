@@ -37,9 +37,17 @@ class GeminiService:
             response = requests.post(url, headers=headers, json=payload, timeout=12)
             if response.status_code == 200:
                 result_json = response.json()
-                text_response = result_json['candidates'][0]['content']['parts'][0]['text']
+                text_response = result_json['candidates'][0]['content']['parts'][0]['text'].strip()
                 
-                text_response = re.sub(r'^```(?:json)?\s*|\s*```$', '', text_response.strip())
+               
+                start_idx = text_response.find('{')
+                end_idx = text_response.rfind('}')
+                if start_idx != -1 and end_idx != -1:
+                    text_response = text_response[start_idx:end_idx + 1]
+                
+                
+                text_response = re.sub(r',\s*([\]}])', r'\1', text_response)
+                
                 parsed = json.loads(text_response)
                 
                 required_keys = {

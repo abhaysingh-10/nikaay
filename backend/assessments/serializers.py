@@ -2,8 +2,12 @@ from rest_framework import serializers
 from .models import Assessment
 
 SKIN_TYPE_CHOICES = ['Normal', 'Dry', 'Oily', 'Combination', 'Sensitive']
-SENSITIVITY_CHOICES = ['Tolerant', 'Slightly Sensitive', 'Very Sensitive']
-CONCERN_CHOICES = ['Acne', 'Aging', 'Hyperpigmentation', 'Dryness', 'Redness', 'None']
+SENSITIVITY_CHOICES = ['Sensitive', 'Tolerant', 'Slightly Sensitive', 'Very Sensitive']
+CONCERN_CHOICES = [
+    'Acne & Breakouts', 'Redness & Irritation', 'Dullness & Spots', 
+    'Aging & Fine Lines', 'Pores & Oiliness',
+    'Acne', 'Aging', 'Hyperpigmentation', 'Dryness', 'Redness', 'None'
+]
 
 class AssessmentInputSerializer(serializers.Serializer):
     skin_type = serializers.ChoiceField(choices=SKIN_TYPE_CHOICES)
