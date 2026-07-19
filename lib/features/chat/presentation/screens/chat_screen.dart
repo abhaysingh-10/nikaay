@@ -13,21 +13,14 @@ class ChatScreen extends ConsumerWidget {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80.0),
         child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: const Border(
+          decoration: const BoxDecoration(
+            color: AppColors.mainBackground,
+            border: Border(
               bottom: BorderSide(
                 color: Color(0xFFEAE5D9),
                 width: 1.0,
               ),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
           child: SafeArea(
             child: Padding(
@@ -126,7 +119,8 @@ class ChatScreen extends ConsumerWidget {
                     width: 52,
                     height: 48,
                     fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                    errorBuilder: (context, error, stackTrace) =>
+                        const SizedBox.shrink(),
                   ),
                   const SizedBox(width: 2),
 
