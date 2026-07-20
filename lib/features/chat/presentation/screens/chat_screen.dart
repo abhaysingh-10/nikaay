@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../providers/chat_provider.dart';
 import '../widgets/chat_bubble.dart';
+import '../widgets/chat_input_bar.dart';
+import '../widgets/suggestion_chips.dart';
 import '../widgets/typing_indicator.dart';
 
 class ChatScreen extends ConsumerWidget {
@@ -146,17 +148,26 @@ class ChatScreen extends ConsumerWidget {
         ),
       ),
       body: SafeArea(
-        child: ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          itemCount: chatState.messages.length + (chatState.isTyping ? 1 : 0),
-          itemBuilder: (context, index) {
-            if (index < chatState.messages.length) {
-              final message = chatState.messages[index];
-              return ChatBubble(message: message);
-            } else {
-              return const TypingIndicator();
-            }
-          },
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                itemCount:
+                    chatState.messages.length + (chatState.isTyping ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index < chatState.messages.length) {
+                    final message = chatState.messages[index];
+                    return ChatBubble(message: message);
+                  } else {
+                    return const TypingIndicator();
+                  }
+                },
+              ),
+            ),
+            const SuggestionChips(),
+            const ChatInputBar(),
+          ],
         ),
       ),
     );
