@@ -40,7 +40,7 @@ class NavigationShellScreen extends StatelessWidget {
         ),
         child: SafeArea(
           child: SizedBox(
-            height: 58,
+            height: 45,
             child: Row(
               children: [
                 _buildNavItem(
@@ -53,8 +53,8 @@ class NavigationShellScreen extends StatelessWidget {
                 _buildNavItem(
                   context: context,
                   index: 1,
-                  activeIcon: Icons.smart_toy,
-                  inactiveIcon: Icons.smart_toy_outlined,
+                  activeIcon: Icons.chat_bubble_outlined,
+                  inactiveIcon: Icons.chat_bubble_outline_rounded,
                   label: 'AI Chat',
                 ),
                 _buildNavItem(

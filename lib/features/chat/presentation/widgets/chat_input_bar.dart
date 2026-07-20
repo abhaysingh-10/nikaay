@@ -81,23 +81,6 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
               ),
             ),
 
-            // Image Attachment Icon
-            IconButton(
-              icon: const Icon(
-                Icons.image_outlined,
-                color: AppColors.secondaryText,
-                size: 22,
-              ),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Image attachment feature coming soon!'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-            ),
-
             // Circular Green Send Button
             GestureDetector(
               onTap: _handleSend,
