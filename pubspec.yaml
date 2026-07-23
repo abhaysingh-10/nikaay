@@ -68,7 +68,7 @@ flutter:
     - assets/splash/
     - assets/onboarding/
     - assets/illustration/
-    - assets/products/
+    - assets/profile/
     - assets/chat/
     - assets/home/
     - assets/auth/
