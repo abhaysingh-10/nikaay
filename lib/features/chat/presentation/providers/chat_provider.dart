@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/network/api_client.dart';
 import '../../domain/chat_message.dart';
 
 class ChatState {
@@ -29,7 +30,7 @@ class ChatNotifier extends Notifier<ChatState> {
   @override
   ChatState build() {
     return const ChatState(
-      isTyping: true,
+      isTyping: false,
       suggestions: [
         'Best serum for acne',
         'How to reduce oiliness?',
@@ -39,49 +40,15 @@ class ChatNotifier extends Notifier<ChatState> {
         ChatMessage(
           id: '1',
           text:
-              "Hello, Ananya! 👋\nI'm here to help you with your skincare questions. What would you like to know?",
+              "Hello! \nI'm here to help you with your skincare questions. What would you like to know?",
           sender: MessageSender.assistant,
           timestamp: '9:41 AM',
-        ),
-        ChatMessage(
-          id: '2',
-          text: 'What cleanser should I use for acne prone skin?',
-          sender: MessageSender.user,
-          timestamp: '9:42 AM',
-          status: MessageStatus.delivered,
-        ),
-        ChatMessage(
-          id: '3',
-          text:
-              'For acne prone skin, look for a gentle cleanser with these ingredients:',
-          sender: MessageSender.assistant,
-          timestamp: '9:43 AM',
-          bulletPoints: [
-            BulletItem(
-              title: 'Salicylic Acid',
-              description: 'Unclogs pores',
-            ),
-            BulletItem(
-              title: 'Tea Tree Oil',
-              description: 'Fights acne bacteria',
-            ),
-            BulletItem(
-              title: 'Niacinamide',
-              description: 'Reduces inflammation',
-            ),
-            BulletItem(
-              title: 'Aloe Vera',
-              description: 'Soothes the skin',
-            ),
-          ],
-          footerText:
-              'I can recommend some great organic cleanser options for you.',
         ),
       ],
     );
   }
 
-  void sendMessage(String text) {
+  Future<void> sendMessage(String text) async {
     if (text.trim().isEmpty) return;
 
     final now = DateTime.now();
@@ -96,17 +63,33 @@ class ChatNotifier extends Notifier<ChatState> {
       status: MessageStatus.delivered,
     );
 
+    final historyPayload = state.messages
+        .map((m) => {
+              'sender': m.sender == MessageSender.user ? 'user' : 'assistant',
+              'text': m.text,
+            })
+        .toList();
+
     state = state.copyWith(
       messages: [...state.messages, userMsg],
       isTyping: true,
     );
 
-    // Simulate AI response for mock mode
-    Future.delayed(const Duration(seconds: 2), () {
+    try {
+      final apiClient = ref.read(apiClientProvider);
+      final response = await apiClient.post(
+        'chat/',
+        data: {
+          'message': text,
+          'history': historyPayload,
+        },
+      );
+
+      final replyText = response.data['text'] as String;
+
       final aiMsg = ChatMessage(
-        id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
-        text:
-            "Thanks for asking! Based on your skin profile, I recommend testing gentle organic formulations first.",
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        text: replyText,
         sender: MessageSender.assistant,
         timestamp: timeStr,
       );
@@ -115,7 +98,20 @@ class ChatNotifier extends Notifier<ChatState> {
         messages: [...state.messages, aiMsg],
         isTyping: false,
       );
-    });
+    } catch (e) {
+      final errorMsg = ChatMessage(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        text:
+            "I'm sorry, I encountered an error. Please check your connection and try again.",
+        sender: MessageSender.assistant,
+        timestamp: timeStr,
+      );
+
+      state = state.copyWith(
+        messages: [...state.messages, errorMsg],
+        isTyping: false,
+      );
+    }
   }
 
   void selectSuggestion(String suggestion) {
