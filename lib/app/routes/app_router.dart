@@ -12,6 +12,7 @@ import '../../features/home/home_screen.dart';
 import '../../features/assessment/assessment_quiz_screen.dart';
 import '../../features/assessment/assessment_result_screen.dart';
 import '../../features/chat/presentation/screens/chat_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/auth/providers/auth_providers.dart';
 import '../../core/storage/preferences_helper.dart';
 
@@ -127,9 +128,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: RouteNames.profile,
-                builder: (context, state) => const Scaffold(
-                  body: Center(child: Text("Profile Placeholder")),
-                ),
+                builder: (context, state) => const ProfileScreen(),
                 routes: [
                   GoRoute(
                     path: RouteNames.settings,
