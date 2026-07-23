@@ -259,15 +259,8 @@ class ProfileScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(width: 12),
-                        const Opacity(
-                          opacity: 0.25,
-                          child: Icon(
-                            Icons.eco_outlined,
-                            size: 40,
-                            color: AppColors.primaryGreen,
-                          ),
-                        ),
+                        const SizedBox(width: 8),
+                        _buildLeafDecoration(),
                       ],
                     ),
                   ],
@@ -290,6 +283,52 @@ class ProfileScreen extends ConsumerWidget {
         Icons.person_outline,
         color: AppColors.primaryGreen,
         size: 44,
+      ),
+    );
+  }
+
+  Widget _buildLeafDecoration() {
+    return SizedBox(
+      width: 56,
+      height: 70,
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          Transform.translate(
+            offset: const Offset(4, 6),
+            child: Transform.rotate(
+              angle: -0.45,
+              child: Icon(
+                Icons.eco,
+                color: AppColors.primaryGreen.withValues(alpha: 0.30),
+                size: 36,
+              ),
+            ),
+          ),
+          Transform.translate(
+            offset: const Offset(-6, -10),
+            child: Transform.rotate(
+              angle: 0.35,
+              child: Icon(
+                Icons.eco,
+                color: AppColors.primaryGreen.withValues(alpha: 0.55),
+                size: 26,
+              ),
+            ),
+          ),
+          Transform.translate(
+            offset: const Offset(10, -18),
+            child: Transform.rotate(
+              angle: -0.15,
+              child: Icon(
+                Icons.eco,
+                color: AppColors.primaryGreen.withValues(alpha: 0.75),
+                size: 18,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
