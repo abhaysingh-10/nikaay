@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../app/routes/route_names.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../providers/chat_provider.dart';
 import '../widgets/chat_bubble.dart';
@@ -45,12 +46,13 @@ class ChatScreen extends ConsumerWidget {
                     onPressed: () {
                       if (context.canPop()) {
                         context.pop();
+                      } else {
+                        context.go(RouteNames.home);
                       }
                     },
                   ),
                   const SizedBox(width: 10),
 
-                  // 48px Avatar
                   ClipRRect(
                     borderRadius: BorderRadius.circular(24.0),
                     child: Image.asset(
