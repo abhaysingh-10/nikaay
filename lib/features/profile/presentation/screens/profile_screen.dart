@@ -4,6 +4,20 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../auth/providers/auth_providers.dart';
 
+class AvatarNotifier extends Notifier<bool> {
+  @override
+  bool build() {
+    return true;
+  }
+
+  void removePhoto() {
+    state = false;
+  }
+}
+
+final showCustomAvatarProvider =
+    NotifierProvider<AvatarNotifier, bool>(AvatarNotifier.new);
+
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -14,10 +28,12 @@ class ProfileScreen extends ConsumerWidget {
     final displayName = user?.displayName ?? 'User';
     final email = user?.email ?? '';
 
-    // Check if the current user is the developer (for demo preview purposes)
-    final showCustomAvatar = user == null || 
-        user.email == 'abhay@nikaay.com' || 
+    final showCustomAvatarState = ref.watch(showCustomAvatarProvider);
+    final isDeveloper = user == null ||
+        user.email == 'abhay@nikaay.com' ||
         user.email?.toLowerCase().contains('abhay') == true;
+
+    final displayCustomAvatar = showCustomAvatarState && isDeveloper;
 
     return Scaffold(
       backgroundColor: AppColors.mainBackground,
@@ -28,7 +44,6 @@ class ProfileScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. Top Header Icons
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -51,12 +66,9 @@ class ProfileScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 16),
-
-              // 2. User Details Section (Avatar + Name & Email + Badge)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Profile Photo Stack
                   Stack(
                     children: [
                       Container(
@@ -71,7 +83,7 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(45),
-                          child: showCustomAvatar
+                          child: displayCustomAvatar
                               ? Image.asset(
                                   'assets/profile/profile.png',
                                   fit: BoxFit.cover,
@@ -84,31 +96,33 @@ class ProfileScreen extends ConsumerWidget {
                       Positioned(
                         right: 0,
                         bottom: 0,
-                        child: Container(
-                          width: 28,
-                          height: 28,
-                          decoration: const BoxDecoration(
-                            color: AppColors.primaryGreen,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                            size: 14,
+                        child: InkWell(
+                          onTap: () => _showEditAvatarOptions(context, ref),
+                          borderRadius: BorderRadius.circular(14),
+                          child: Container(
+                            width: 28,
+                            height: 28,
+                            decoration: const BoxDecoration(
+                              color: AppColors.primaryGreen,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                              size: 14,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(width: 20),
-
-                  // Name, Email, Pill Badge
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          displayName, // Dynamically loaded name with no prefix
+                          displayName,
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -160,14 +174,8 @@ class ProfileScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 32),
-
-              // Placeholder for Step 2: Skin Confidence Score Card
               const SizedBox.shrink(),
-
-              // Placeholder for Step 3: Quick Access Grid
               const SizedBox.shrink(),
-
-              // Placeholder for Step 4: Settings List
               const SizedBox.shrink(),
             ],
           ),
@@ -183,6 +191,40 @@ class ProfileScreen extends ConsumerWidget {
         Icons.person_outline,
         color: AppColors.primaryGreen,
         size: 44,
+      ),
+    );
+  }
+
+  void _showEditAvatarOptions(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined,
+                  color: AppColors.primaryGreen),
+              title: const Text('Change Profile Picture'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_outline, color: Colors.red),
+              title: const Text('Remove Photo',
+                  style: TextStyle(color: Colors.red)),
+              onTap: () {
+                Navigator.pop(context);
+                ref.read(showCustomAvatarProvider.notifier).removePhoto();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
