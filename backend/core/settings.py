@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     # Project Apps
     'accounts',
     'assessments',
+    'chat',
 ]
 
 MIDDLEWARE = [
