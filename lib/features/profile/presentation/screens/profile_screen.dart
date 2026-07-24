@@ -5,6 +5,8 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../widgets/quick_access_section.dart';
 import '../widgets/skin_confidence_card.dart';
+import '../widgets/settings_list.dart';
+import '../widgets/logout_button.dart';
 
 class AvatarNotifier extends Notifier<bool> {
   @override
@@ -181,7 +183,9 @@ class ProfileScreen extends ConsumerWidget {
               const SizedBox(height: 28),
               const QuickAccessSection(),
               const SizedBox(height: 28),
-              const SizedBox.shrink(),
+              const SettingsList(),
+              const SizedBox(height: 20),
+              const LogoutButton(),
             ],
           ),
         ),
