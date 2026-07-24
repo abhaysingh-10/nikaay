@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../auth/providers/auth_providers.dart';
+import '../widgets/quick_access_section.dart';
 import '../widgets/skin_confidence_card.dart';
 
 class AvatarNotifier extends Notifier<bool> {
@@ -40,7 +41,8 @@ class ProfileScreen extends ConsumerWidget {
       backgroundColor: AppColors.mainBackground,
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+          physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics()),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,7 +179,8 @@ class ProfileScreen extends ConsumerWidget {
               const SizedBox(height: 32),
               const SkinConfidenceCard(),
               const SizedBox(height: 28),
-              const SizedBox.shrink(),
+              const QuickAccessSection(),
+              const SizedBox(height: 28),
               const SizedBox.shrink(),
             ],
           ),
