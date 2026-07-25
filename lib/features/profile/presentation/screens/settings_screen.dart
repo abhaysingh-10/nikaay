@@ -127,6 +127,122 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 28),
+            Text(
+              'Privacy & Security',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: AppColors.secondaryText,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: const Color(0xFFF0EBE1),
+                  width: 1.0,
+                ),
+              ),
+              child: Column(
+                children: [
+                  _buildSettingsRow(
+                    icon: Icons.shield_outlined,
+                    label: 'Privacy Policy',
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: AppColors.secondaryText.withValues(alpha: 0.6),
+                      size: 20,
+                    ),
+                    onTap: () {},
+                  ),
+                  const Divider(
+                    height: 1,
+                    color: Color(0xFFF6F2EB),
+                    indent: 16,
+                    endIndent: 16,
+                  ),
+                  _buildSettingsRow(
+                    icon: Icons.description_outlined,
+                    label: 'Terms & Conditions',
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: AppColors.secondaryText.withValues(alpha: 0.6),
+                      size: 20,
+                    ),
+                    onTap: () {},
+                  ),
+                  const Divider(
+                    height: 1,
+                    color: Color(0xFFF6F2EB),
+                    indent: 16,
+                    endIndent: 16,
+                  ),
+                  _buildSettingsRow(
+                    icon: Icons.lock_outline,
+                    label: 'Data & Security',
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: AppColors.secondaryText.withValues(alpha: 0.6),
+                      size: 20,
+                    ),
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 28),
+            Text(
+              'Support',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: AppColors.secondaryText,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: const Color(0xFFF0EBE1),
+                  width: 1.0,
+                ),
+              ),
+              child: Column(
+                children: [
+                  _buildSettingsRow(
+                    icon: Icons.help_outline,
+                    label: 'Help & Support',
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: AppColors.secondaryText.withValues(alpha: 0.6),
+                      size: 20,
+                    ),
+                    onTap: () {},
+                  ),
+                  const Divider(
+                    height: 1,
+                    color: Color(0xFFF6F2EB),
+                    indent: 16,
+                    endIndent: 16,
+                  ),
+                  _buildSettingsRow(
+                    icon: Icons.info_outline,
+                    label: 'About Nikaay',
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: AppColors.secondaryText.withValues(alpha: 0.6),
+                      size: 20,
+                    ),
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 28),
           ],
         ),
       ),
