@@ -49,25 +49,24 @@ class ChatbotView(APIView):
             if not text:
                 continue
             role = 'user' if sender == 'user' else 'model'
+            if not contents and role == 'model':
+                continue
             contents.append({
                 "role": role,
                 "parts": [{"text": text}]
             })
         
-        # Append current user message
         contents.append({
             "role": "user",
             "parts": [{"text": message}]
         })
 
-        # Fallback if GEMINI_API_KEY is missing
         if not api_key:
             return Response({
                 "text": "Hello! I am your Nikaay Assistant. To get personalized, real-time AI recommendations, please configure the Gemini API key. In the meantime, I can assist you with general skincare questions.",
                 "is_fallback": True
             })
 
-        # Call the Gemini API
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={api_key}"
         payload = {
             "contents": contents,
@@ -75,7 +74,7 @@ class ChatbotView(APIView):
                 "parts": [{"text": system_instruction}]
             },
             "generationConfig": {
-                "maxOutputTokens": 800,
+                "maxOutputTokens": 2048,
                 "temperature": 0.7,
             }
         }
@@ -90,6 +89,8 @@ class ChatbotView(APIView):
                     "is_fallback": False
                 })
             else:
+                print("GEMINI API ERROR STATUS:", response.status_code)
+                print("GEMINI API ERROR RESPONSE:", response.text)
                 return Response({
                     "text": "I'm sorry, I'm having trouble connecting to my knowledge base right now. Please try again in a moment.",
                     "is_fallback": True
