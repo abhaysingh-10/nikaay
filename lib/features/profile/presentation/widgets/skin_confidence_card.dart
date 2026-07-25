@@ -9,98 +9,128 @@ class SkinConfidenceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFFAF6F0),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: const Color(0xFFF0EBE1),
           width: 1.0,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
-      child: Row(
+      child: Stack(
         children: [
-          Expanded(
-            flex: 4,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Skin Confidence',
-                  style: GoogleFonts.inter(
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryText,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Your overall skin confidence score',
-                  style: GoogleFonts.inter(
-                    fontSize: 12.0,
-                    color: AppColors.secondaryText,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 3,
-            child: Center(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const SizedBox(
-                    width: 68,
-                    height: 68,
-                    child: CircularProgressIndicator(
-                      value: 0.92,
-                      strokeWidth: 3.5,
-                      color: Color(0xFF388E3C),
-                      backgroundColor: Color(0xFFE8F5E9),
-                    ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '92%',
-                        style: GoogleFonts.inter(
-                          fontSize: 14.5,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryText,
-                          height: 1.1,
-                        ),
-                      ),
-                      Text(
-                        'Good',
-                        style: GoogleFonts.inter(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF388E3C),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Opacity(
+              opacity: 0.12,
+              child: Image.asset(
+                'assets/profile/chat_screen.png',
+                width: 90,
+                height: 90,
+                fit: BoxFit.contain,
               ),
             ),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 3,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: _buildLeafDecoration(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Your Skin Profile',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryText,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: Text(
+                        'View Details',
+                        style: GoogleFonts.inter(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryGreen,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Last updated: May 20, 2024',
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    color: AppColors.secondaryText.withValues(alpha: 0.8),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color(0xFFF0EBE1),
+                      width: 0.8,
+                    ),
+                  ),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      children: [
+                        _buildProfileItem(
+                          icon: Icons.opacity_outlined,
+                          iconColor: const Color(0xFF3F7D3B),
+                          label: 'Skin Type',
+                          value: 'Oily',
+                        ),
+                        const VerticalDivider(
+                          width: 1,
+                          color: Color(0xFFF0EBE1),
+                          thickness: 0.8,
+                        ),
+                        _buildProfileItem(
+                          icon: Icons.auto_awesome_outlined,
+                          iconColor: const Color(0xFFD4AF37),
+                          label: 'Concerns',
+                          value: 'Acne, Pores',
+                        ),
+                        const VerticalDivider(
+                          width: 1,
+                          color: Color(0xFFF0EBE1),
+                          thickness: 0.8,
+                        ),
+                        _buildProfileItem(
+                          icon: Icons.spa_outlined,
+                          iconColor: const Color(0xFF2E7D32),
+                          label: 'Sensitivity',
+                          value: 'Low',
+                          valueColor: const Color(0xFF2E7D32),
+                        ),
+                        const VerticalDivider(
+                          width: 1,
+                          color: Color(0xFFF0EBE1),
+                          thickness: 0.8,
+                        ),
+                        _buildProfileItem(
+                          icon: Icons.favorite_border,
+                          iconColor: const Color(0xFFC62828),
+                          label: 'Confidence',
+                          value: '92%',
+                          valueColor: const Color(0xFF388E3C),
+                          valueWeight: FontWeight.bold,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -108,46 +138,44 @@ class SkinConfidenceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildLeafDecoration() {
-    return SizedBox(
-      width: 56,
-      height: 70,
-      child: Stack(
-        alignment: Alignment.center,
-        clipBehavior: Clip.none,
+  Widget _buildProfileItem({
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required String value,
+    Color? valueColor,
+    FontWeight? valueWeight,
+  }) {
+    return Expanded(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Transform.translate(
-            offset: const Offset(4, 6),
-            child: Transform.rotate(
-              angle: -0.45,
-              child: Icon(
-                Icons.eco,
-                color: AppColors.primaryGreen.withValues(alpha: 0.30),
-                size: 36,
-              ),
-            ),
+          Icon(
+            icon,
+            color: iconColor,
+            size: 20,
           ),
-          Transform.translate(
-            offset: const Offset(-6, -10),
-            child: Transform.rotate(
-              angle: 0.35,
-              child: Icon(
-                Icons.eco,
-                color: AppColors.primaryGreen.withValues(alpha: 0.55),
-                size: 26,
-              ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryText,
             ),
+            textAlign: TextAlign.center,
           ),
-          Transform.translate(
-            offset: const Offset(10, -18),
-            child: Transform.rotate(
-              angle: -0.15,
-              child: Icon(
-                Icons.eco,
-                color: AppColors.primaryGreen.withValues(alpha: 0.75),
-                size: 18,
-              ),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            style: GoogleFonts.inter(
+              fontSize: 10,
+              fontWeight: valueWeight ?? FontWeight.normal,
+              color: valueColor ?? AppColors.secondaryText,
             ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
