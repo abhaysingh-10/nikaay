@@ -70,7 +70,7 @@ flutter:
     - assets/illustration/
     - assets/profile/
     - assets/chat/
-    - assets/home/
+    - assets/education/
     - assets/auth/
 
   # An image asset can refer to one or more resolution-specific "variants", see
