@@ -249,7 +249,7 @@ class HomeScreen extends ConsumerWidget {
                           icon: Icons.import_contacts_rounded,
                           iconColor: const Color(0xFF8A5DC9),
                           circleColor: const Color(0xFFF3EAFB),
-                          onTap: () => _showEducationSheet(context),
+                          onTap: () => context.push(RouteNames.education),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -409,52 +409,6 @@ class HomeScreen extends ConsumerWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  void _showEducationSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-        ),
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Education & Tips',
-              style: GoogleFonts.playfairDisplay(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryText,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              leading:
-                  const Icon(Icons.science_outlined, color: Color(0xFF8A5DC9)),
-              title: const Text('Understanding Retinoids'),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.water_drop_outlined,
-                  color: Color(0xFF8A5DC9)),
-              title: const Text('Hyaluronic Acid Guide'),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-              onTap: () => Navigator.pop(context),
-            ),
-          ],
         ),
       ),
     );

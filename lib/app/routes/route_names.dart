@@ -8,6 +8,7 @@ class RouteNames {
   static const String history = '/history';
   static const String profile = '/profile';
   static const String settings = 'settings';
+  static const String education = '/home/education';
   static const String assessment = '/assessment';
   static const String assessmentResult = '/assessment-result';
 }

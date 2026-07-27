@@ -14,6 +14,7 @@ import '../../features/assessment/assessment_result_screen.dart';
 import '../../features/chat/presentation/screens/chat_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/profile/presentation/screens/settings_screen.dart';
+import '../../features/education/presentation/screens/education_screen.dart';
 import '../../features/auth/providers/auth_providers.dart';
 import '../../core/storage/preferences_helper.dart';
 
@@ -103,7 +104,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: RouteNames.home,
-                builder: (context, state) => HomeScreen(),
+                builder: (context, state) => const HomeScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'education',
+                    builder: (context, state) => const EducationScreen(),
+                  ),
+                ],
               ),
             ],
           ),
