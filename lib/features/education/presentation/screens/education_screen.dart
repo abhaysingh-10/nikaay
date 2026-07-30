@@ -44,11 +44,13 @@ class EducationScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back, color: AppColors.primaryText),
+                    icon: const Icon(Icons.arrow_back,
+                        color: AppColors.primaryText),
                     onPressed: () => context.pop(),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
@@ -79,7 +81,8 @@ class EducationScreen extends ConsumerWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -99,14 +102,16 @@ class EducationScreen extends ConsumerWidget {
                 child: TextField(
                   onChanged: (val) =>
                       ref.read(searchQueryProvider.notifier).updateQuery(val),
-                  style: GoogleFonts.inter(fontSize: 14, color: AppColors.primaryText),
+                  style: GoogleFonts.inter(
+                      fontSize: 14, color: AppColors.primaryText),
                   decoration: InputDecoration(
                     hintText: 'Search articles...',
                     hintStyle: GoogleFonts.inter(
                       fontSize: 14,
                       color: AppColors.secondaryText.withValues(alpha: 0.7),
                     ),
-                    prefixIcon: const Icon(Icons.search, color: AppColors.secondaryText),
+                    prefixIcon: const Icon(Icons.search,
+                        color: AppColors.secondaryText),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 14.0),
                   ),
@@ -128,13 +133,18 @@ class EducationScreen extends ConsumerWidget {
                     padding: const EdgeInsets.only(right: 8.0),
                     child: InkWell(
                       onTap: () {
-                        ref.read(selectedCategoryProvider.notifier).select(category);
+                        ref
+                            .read(selectedCategoryProvider.notifier)
+                            .select(category);
                       },
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          color: isActive ? AppColors.primaryGreen : AppColors.lightBeige,
+                          color: isActive
+                              ? AppColors.primaryGreen
+                              : AppColors.lightBeige,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                             color: isActive
@@ -147,8 +157,10 @@ class EducationScreen extends ConsumerWidget {
                           category,
                           style: GoogleFonts.inter(
                             fontSize: 13,
-                            fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                            color: isActive ? Colors.white : AppColors.primaryText,
+                            fontWeight:
+                                isActive ? FontWeight.bold : FontWeight.w500,
+                            color:
+                                isActive ? Colors.white : AppColors.primaryText,
                           ),
                         ),
                       ),
@@ -175,7 +187,8 @@ class EducationScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (searchQuery.isEmpty && featuredArticle != null) ...[
+                          if (searchQuery.isEmpty &&
+                              featuredArticle != null) ...[
                             Text(
                               'Featured Article',
                               style: GoogleFonts.playfairDisplay(
@@ -196,7 +209,8 @@ class EducationScreen extends ConsumerWidget {
                                   borderRadius: BorderRadius.circular(16),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.05),
+                                      color:
+                                          Colors.black.withValues(alpha: 0.05),
                                       blurRadius: 10,
                                       offset: const Offset(0, 4),
                                     ),
@@ -212,7 +226,7 @@ class EducationScreen extends ConsumerWidget {
                                       ),
                                       child: Image.asset(
                                         featuredArticle.imageUrl,
-                                        height: 180,
+                                        height: 250,
                                         width: double.infinity,
                                         fit: BoxFit.cover,
                                       ),
@@ -220,14 +234,16 @@ class EducationScreen extends ConsumerWidget {
                                     Padding(
                                       padding: const EdgeInsets.all(16.0),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                featuredArticle.category.toUpperCase(),
+                                                featuredArticle.category
+                                                    .toUpperCase(),
                                                 style: GoogleFonts.inter(
                                                   fontSize: 11,
                                                   fontWeight: FontWeight.bold,
@@ -239,7 +255,8 @@ class EducationScreen extends ConsumerWidget {
                                                 featuredArticle.readTime,
                                                 style: GoogleFonts.inter(
                                                   fontSize: 11,
-                                                  color: AppColors.secondaryText,
+                                                  color:
+                                                      AppColors.secondaryText,
                                                 ),
                                               ),
                                             ],
@@ -274,7 +291,9 @@ class EducationScreen extends ConsumerWidget {
                             const SizedBox(height: 24),
                           ],
                           Text(
-                            searchQuery.isNotEmpty ? 'Search Results' : 'Skincare Library',
+                            searchQuery.isNotEmpty
+                                ? 'Search Results'
+                                : 'Skincare Library',
                             style: GoogleFonts.playfairDisplay(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -302,7 +321,8 @@ class EducationScreen extends ConsumerWidget {
                                     borderRadius: BorderRadius.circular(12),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.03),
+                                        color: Colors.black
+                                            .withValues(alpha: 0.03),
                                         blurRadius: 8,
                                         offset: const Offset(0, 2),
                                       ),
@@ -338,7 +358,8 @@ class EducationScreen extends ConsumerWidget {
                                               article.title,
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.playfairDisplay(
+                                              style:
+                                                  GoogleFonts.playfairDisplay(
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.bold,
                                                 color: AppColors.primaryText,
