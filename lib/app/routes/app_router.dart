@@ -15,6 +15,8 @@ import '../../features/chat/presentation/screens/chat_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/profile/presentation/screens/settings_screen.dart';
 import '../../features/education/presentation/screens/education_screen.dart';
+import '../../features/education/domain/article.dart';
+import '../../features/education/presentation/screens/article_detail_screen.dart';
 import '../../features/auth/providers/auth_providers.dart';
 import '../../core/storage/preferences_helper.dart';
 
@@ -109,6 +111,15 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'education',
                     builder: (context, state) => const EducationScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'detail',
+                        builder: (context, state) {
+                          final article = state.extra as Article;
+                          return ArticleDetailScreen(article: article);
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
