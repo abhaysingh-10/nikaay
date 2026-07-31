@@ -17,6 +17,7 @@ import '../../features/profile/presentation/screens/settings_screen.dart';
 import '../../features/education/presentation/screens/education_screen.dart';
 import '../../features/education/domain/article.dart';
 import '../../features/education/presentation/screens/article_detail_screen.dart';
+import '../../features/assessment/presentation/screens/consultation_history_screen.dart';
 import '../../features/auth/providers/auth_providers.dart';
 import '../../core/storage/preferences_helper.dart';
 
@@ -137,9 +138,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: RouteNames.history,
-                builder: (context, state) => const Scaffold(
-                  body: Center(child: Text("History Placeholder")),
-                ),
+                builder: (context, state) => const ConsultationHistoryScreen(),
               ),
             ],
           ),
