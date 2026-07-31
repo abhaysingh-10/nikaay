@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../app/routes/route_names.dart';
 import '../../app/theme/app_colors.dart';
 import 'data/assessment_repository.dart';
+import 'providers/assessment_providers.dart';
 
 class AssessmentQuizScreen extends ConsumerStatefulWidget {
   const AssessmentQuizScreen({super.key});
@@ -134,6 +135,7 @@ class _AssessmentQuizScreenState extends ConsumerState<AssessmentQuizScreen> {
       final response = await repository.submitAssessment(_answers);
       
       if (mounted) {
+        ref.invalidate(assessmentHistoryProvider);
         Navigator.pop(context);
         final resultData = response['result'] as Map<String, dynamic>?;
         context.go(RouteNames.assessmentResult, extra: resultData);
