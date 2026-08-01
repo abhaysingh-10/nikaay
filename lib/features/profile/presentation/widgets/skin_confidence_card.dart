@@ -23,9 +23,9 @@ class SkinConfidenceCard extends StatelessWidget {
             right: 0,
             bottom: 0,
             child: Opacity(
-              opacity: 0.12,
+              opacity: 0.35,
               child: Image.asset(
-                'assets/profile/chat_screen.png',
+                'assets/chat/chat_screen.png',
                 width: 90,
                 height: 90,
                 fit: BoxFit.contain,
