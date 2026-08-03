@@ -261,7 +261,7 @@ class HomeScreen extends ConsumerWidget {
                           icon: Icons.cloud_upload_rounded,
                           iconColor: const Color(0xFF3B82F6),
                           circleColor: const Color(0xFFE6F0FA),
-                          onTap: () => _showUploadReportsSheet(context),
+                          onTap: () => context.push(RouteNames.reports),
                         ),
                       ),
                     ],
@@ -414,97 +414,6 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _showUploadReportsSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-        ),
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Upload Skin Reports',
-              style: GoogleFonts.playfairDisplay(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryText,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Upload dermatologist notes or prescriptions to sync with your health profile.',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                  color: AppColors.secondaryText, fontSize: 13),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildUploadOption(
-                  icon: Icons.camera_alt_outlined,
-                  label: 'Camera',
-                  onTap: () => Navigator.pop(context),
-                ),
-                _buildUploadOption(
-                  icon: Icons.photo_library_outlined,
-                  label: 'Gallery',
-                  onTap: () => Navigator.pop(context),
-                ),
-                _buildUploadOption(
-                  icon: Icons.picture_as_pdf_outlined,
-                  label: 'PDF Document',
-                  onTap: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUploadOption({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        width: 80,
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE6F0FA),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: const Color(0xFF3B82F6), size: 24),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style:
-                  GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   void _showPromoDialog(BuildContext context) {
     showDialog(
