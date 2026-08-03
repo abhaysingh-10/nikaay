@@ -48,4 +48,12 @@ class ReportRepository {
       rethrow;
     }
   }
+
+  Future<void> deleteReport(int id) async {
+    try {
+      await _dio.delete('reports/$id/');
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

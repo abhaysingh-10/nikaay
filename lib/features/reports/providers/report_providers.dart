@@ -46,6 +46,16 @@ class ReportUploadNotifier extends AsyncNotifier<Report?> {
       state = AsyncValue.error(e, stackTrace);
     }
   }
+
+  Future<void> deleteReport(int id) async {
+    try {
+      final repository = ref.read(reportRepositoryProvider);
+      await repository.deleteReport(id);
+      ref.invalidate(reportsListProvider);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
+  }
 }
 
 final reportUploadNotifierProvider =
