@@ -23,8 +23,13 @@ class _UploadReportsScreenState extends ConsumerState<UploadReportsScreen> {
   String _formatBytes(int bytes) {
     if (bytes <= 0) return "0 B";
     const suffixes = ["B", "KB", "MB", "GB"];
-    var i = (bytes / 1024).floor();
-    return "${(bytes / (i > 0 ? (1024 * i) : 1)).toStringAsFixed(1)} ${suffixes[i]}";
+    double size = bytes.toDouble();
+    int i = 0;
+    while (size >= 1024 && i < suffixes.length - 1) {
+      size /= 1024;
+      i++;
+    }
+    return "${size.toStringAsFixed(1)} ${suffixes[i]}";
   }
 
   String _formatDate(String isoString) {
