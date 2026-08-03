@@ -57,3 +57,7 @@ db.sqlite3
 *service-account*.json
 firebase-*.json
 *.credential.json
+
+# Backend Media uploads
+backend/media/
+backend/skin_reports/
