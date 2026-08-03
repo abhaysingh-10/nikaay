@@ -6,6 +6,9 @@ import 'package:file_picker/file_picker.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../domain/report.dart';
 import '../../providers/report_providers.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../app/routes/route_names.dart';
 
 class UploadReportsScreen extends ConsumerStatefulWidget {
   const UploadReportsScreen({super.key});
@@ -436,7 +439,6 @@ class _UploadReportsScreenState extends ConsumerState<UploadReportsScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Container(
-        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: AppColors.cardBackground,
           borderRadius: BorderRadius.circular(12),
@@ -444,76 +446,83 @@ class _UploadReportsScreenState extends ConsumerState<UploadReportsScreen> {
             color: AppColors.warmBeige.withValues(alpha: 0.2),
           ),
         ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: _getFileColor(report.fileType).withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                _getFileIcon(report.fileType),
-                color: _getFileColor(report.fileType),
-                size: 22,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    report.filename,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryText,
-                    ),
+        child: InkWell(
+          onTap: () => _openFile(report),
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: _getFileColor(report.fileType).withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  const SizedBox(height: 4),
-                  Row(
+                  child: Icon(
+                    _getFileIcon(report.fileType),
+                    color: _getFileColor(report.fileType),
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _formatBytes(report.fileSize),
+                        report.filename,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.inter(
-                          fontSize: 11,
-                          color: AppColors.secondaryText,
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryText,
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Container(
-                        width: 3,
-                        height: 3,
-                        decoration: const BoxDecoration(
-                          color: AppColors.secondaryText,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        _formatDate(report.uploadedAt),
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          color: AppColors.secondaryText,
-                        ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Text(
+                            _formatBytes(report.fileSize),
+                            style: GoogleFonts.inter(
+                              fontSize: 11,
+                              color: AppColors.secondaryText,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            width: 3,
+                            height: 3,
+                            decoration: const BoxDecoration(
+                              color: AppColors.secondaryText,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            _formatDate(report.uploadedAt),
+                            style: GoogleFonts.inter(
+                              fontSize: 11,
+                              color: AppColors.secondaryText,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: AppColors.error,
+                    size: 20,
+                  ),
+                  onPressed: () => _confirmDelete(context, report),
+                ),
+              ],
             ),
-            IconButton(
-              icon: const Icon(
-                Icons.delete_outline,
-                color: AppColors.error,
-                size: 20,
-              ),
-              onPressed: () => _confirmDelete(context, report),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -588,6 +597,104 @@ class _UploadReportsScreenState extends ConsumerState<UploadReportsScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _openFile(Report report) async {
+    if (report.fileUrl.isEmpty) return;
+
+    try {
+      String fileUrl = report.fileUrl;
+      // Resolve relative path to absolute URL prepended with host
+      if (!fileUrl.startsWith('http')) {
+        final baseUrl = ref.read(apiClientProvider).options.baseUrl;
+        final uri = Uri.parse(baseUrl);
+        final hostUrl = '${uri.scheme}://${uri.host}:${uri.port}';
+        fileUrl = '$hostUrl$fileUrl';
+      }
+
+      final ext = report.fileType.toLowerCase().replaceAll('.', '');
+      if (ext == 'pdf') {
+        // Open PDF natively using our clean in-app PdfViewerScreen widget
+        if (mounted) {
+          context.push(
+            RouteNames.pdfViewer,
+            extra: {
+              'fileUrl': fileUrl,
+              'filename': report.filename,
+            },
+          );
+        }
+      } else if (ext == 'png' || ext == 'jpg' || ext == 'jpeg') {
+        // Open images in-app inside a premium Flutter dialog
+        if (mounted) {
+          _showImageDialog(context, fileUrl);
+        }
+      } else {
+        // Fallback for ZIP files: show in-app info snackbar
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Preview not supported for $ext files in-app.'),
+              backgroundColor: AppColors.primaryGreen,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not open file: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showImageDialog(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 32),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: InteractiveViewer(
+                minScale: 0.5,
+                maxScale: 4.0,
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const SizedBox(
+                      height: 300,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

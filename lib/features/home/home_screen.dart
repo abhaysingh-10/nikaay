@@ -414,7 +414,6 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-
   void _showPromoDialog(BuildContext context) {
     showDialog(
       context: context,

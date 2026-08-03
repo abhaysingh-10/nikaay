@@ -19,6 +19,7 @@ import '../../features/education/domain/article.dart';
 import '../../features/education/presentation/screens/article_detail_screen.dart';
 import '../../features/assessment/presentation/screens/consultation_history_screen.dart';
 import '../../features/reports/presentation/screens/upload_reports_screen.dart';
+import '../../features/reports/presentation/screens/pdf_viewer_screen.dart';
 import '../../features/auth/providers/auth_providers.dart';
 import '../../core/storage/preferences_helper.dart';
 
@@ -126,6 +127,18 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'reports',
                     builder: (context, state) => const UploadReportsScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'pdf-viewer',
+                        builder: (context, state) {
+                          final params = state.extra as Map<String, dynamic>;
+                          return PdfViewerScreen(
+                            fileUrl: params['fileUrl'] as String,
+                            filename: params['filename'] as String,
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
