@@ -10,6 +10,7 @@ class RouteNames {
   static const String settings = 'settings';
   static const String education = '/home/education';
   static const String articleDetail = '/home/education/detail';
+  static const String reports = '/home/reports';
   static const String assessment = '/assessment';
   static const String assessmentResult = '/assessment-result';
 }

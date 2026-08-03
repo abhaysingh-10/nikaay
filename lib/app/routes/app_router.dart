@@ -18,6 +18,7 @@ import '../../features/education/presentation/screens/education_screen.dart';
 import '../../features/education/domain/article.dart';
 import '../../features/education/presentation/screens/article_detail_screen.dart';
 import '../../features/assessment/presentation/screens/consultation_history_screen.dart';
+import '../../features/reports/presentation/screens/upload_reports_screen.dart';
 import '../../features/auth/providers/auth_providers.dart';
 import '../../core/storage/preferences_helper.dart';
 
@@ -121,6 +122,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                         },
                       ),
                     ],
+                  ),
+                  GoRoute(
+                    path: 'reports',
+                    builder: (context, state) => const UploadReportsScreen(),
                   ),
                 ],
               ),
