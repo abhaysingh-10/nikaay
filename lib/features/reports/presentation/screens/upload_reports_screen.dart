@@ -172,7 +172,7 @@ class _UploadReportsScreenState extends ConsumerState<UploadReportsScreen> {
                     const SizedBox(height: 20),
                     _buildUploadTriggerCard(uploadState.isLoading),
                     if (uploadState.isLoading ||
-                        uploadState.hasValue ||
+                        (uploadState.hasValue && uploadState.value != null) ||
                         uploadState.hasError) ...[
                       const SizedBox(height: 20),
                       _buildUploadProgressCard(uploadState, uploadProgress),
@@ -559,6 +559,7 @@ class _UploadReportsScreenState extends ConsumerState<UploadReportsScreen> {
                 await ref
                     .read(reportUploadNotifierProvider.notifier)
                     .deleteReport(report.id);
+                ref.invalidate(reportUploadNotifierProvider);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
