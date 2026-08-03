@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Nikaay requires access to your photo library to let you upload skin reports.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Nikaay requires camera access to let you capture and upload skin reports.</string>
 </dict>
 </plist>

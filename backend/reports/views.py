@@ -39,3 +39,20 @@ class ReportUploadView(APIView):
         reports = Report.objects.filter(user=request.user).order_by('-uploaded_at')
         serializer = ReportUploadSerializer(reports, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ReportDetailView(APIView):
+    def delete(self, request, pk, *args, **kwargs):
+        try:
+            report = Report.objects.get(pk=pk, user=request.user)
+            if report.file:
+                report.file.delete(save=False)
+            report.delete()
+            return Response(
+                {"message": "Report deleted successfully."}, 
+                status=status.HTTP_204_NO_CONTENT
+            )
+        except Report.DoesNotExist:
+            return Response(
+                {"error": "Report not found."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
