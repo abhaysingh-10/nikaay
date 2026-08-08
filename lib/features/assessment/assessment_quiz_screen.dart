@@ -11,7 +11,8 @@ class AssessmentQuizScreen extends ConsumerStatefulWidget {
   const AssessmentQuizScreen({super.key});
 
   @override
-  ConsumerState<AssessmentQuizScreen> createState() => _AssessmentQuizScreenState();
+  ConsumerState<AssessmentQuizScreen> createState() =>
+      _AssessmentQuizScreenState();
 }
 
 class _AssessmentQuizScreenState extends ConsumerState<AssessmentQuizScreen> {
@@ -113,7 +114,8 @@ class _AssessmentQuizScreenState extends ConsumerState<AssessmentQuizScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryGreen),
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(AppColors.primaryGreen),
               ),
               const SizedBox(height: 24),
               Text(
@@ -133,7 +135,7 @@ class _AssessmentQuizScreenState extends ConsumerState<AssessmentQuizScreen> {
     try {
       final repository = ref.read(assessmentRepositoryProvider);
       final response = await repository.submitAssessment(_answers);
-      
+
       if (mounted) {
         ref.invalidate(assessmentHistoryProvider);
         Navigator.pop(context);
@@ -177,7 +179,8 @@ class _AssessmentQuizScreenState extends ConsumerState<AssessmentQuizScreen> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close, color: AppColors.primaryText),
+                        icon: const Icon(Icons.close,
+                            color: AppColors.primaryText),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ],
@@ -185,8 +188,10 @@ class _AssessmentQuizScreenState extends ConsumerState<AssessmentQuizScreen> {
                   const SizedBox(height: 8),
                   LinearProgressIndicator(
                     value: (_currentPage + 1) / _questions.length,
-                    backgroundColor: AppColors.secondaryText.withValues(alpha: 0.1),
-                    valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryGreen),
+                    backgroundColor:
+                        AppColors.secondaryText.withValues(alpha: 0.1),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                        AppColors.primaryGreen),
                     minHeight: 6,
                     borderRadius: BorderRadius.circular(3),
                   ),
@@ -262,7 +267,8 @@ class _AssessmentQuizScreenState extends ConsumerState<AssessmentQuizScreen> {
                       backgroundColor: AppColors.primaryGreen,
                       foregroundColor: Colors.white,
                       elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 28, vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
@@ -296,7 +302,9 @@ class _AssessmentQuizScreenState extends ConsumerState<AssessmentQuizScreen> {
         color: isSelected ? const Color(0xFFE2EFE0) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isSelected ? AppColors.primaryGreen : AppColors.secondaryText.withValues(alpha: 0.1),
+          color: isSelected
+              ? AppColors.primaryGreen
+              : AppColors.secondaryText.withValues(alpha: 0.1),
           width: isSelected ? 1.5 : 1,
         ),
       ),
