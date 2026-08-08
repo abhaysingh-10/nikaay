@@ -11,6 +11,7 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+backend/venv/
 
 # IntelliJ related
 *.iml
@@ -61,3 +62,4 @@ firebase-*.json
 # Backend Media uploads
 backend/media/
 backend/skin_reports/
+
