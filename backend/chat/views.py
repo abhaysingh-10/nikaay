@@ -67,7 +67,7 @@ class ChatbotView(APIView):
                 "is_fallback": True
             })
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key={api_key}"
         payload = {
             "contents": contents,
             "systemInstruction": {
@@ -79,26 +79,37 @@ class ChatbotView(APIView):
             }
         }
         
-        try:
-            response = requests.post(url, json=payload, timeout=12)
-            if response.status_code == 200:
-                result_json = response.json()
-                reply_text = result_json['candidates'][0]['content']['parts'][0]['text'].strip()
+        import time
+        for attempt in range(3):
+            try:
+                response = requests.post(url, json=payload, timeout=15)
+                if response.status_code == 200:
+                    result_json = response.json()
+                    reply_text = result_json['candidates'][0]['content']['parts'][0]['text'].strip()
+                    return Response({
+                        "text": reply_text,
+                        "is_fallback": False
+                    })
+                elif response.status_code == 503:
+                    print(f"GEMINI API 503 ERROR (attempt {attempt + 1}). Retrying...")
+                    time.sleep(1.5 ** attempt)
+                    continue
+                else:
+                    print("GEMINI API ERROR STATUS:", response.status_code)
+                    print("GEMINI API ERROR RESPONSE:", response.text)
+                    return Response({
+                        "text": "I'm sorry, I'm having trouble connecting to my knowledge base right now. Please try again in a moment.",
+                        "is_fallback": True
+                    })
+            except Exception as e:
                 return Response({
-                    "text": reply_text,
-                    "is_fallback": False
-                })
-            else:
-                print("GEMINI API ERROR STATUS:", response.status_code)
-                print("GEMINI API ERROR RESPONSE:", response.text)
-                return Response({
-                    "text": "I'm sorry, I'm having trouble connecting to my knowledge base right now. Please try again in a moment.",
+                    "text": "I'm sorry, I encountered an error processing your chat. Please try again.",
                     "is_fallback": True
                 })
-        except Exception as e:
-            return Response({
-                "text": "I'm sorry, I encountered an error processing your chat. Please try again.",
-                "is_fallback": True
-            })
+                
+        return Response({
+            "text": "I'm sorry, I'm having trouble connecting to my knowledge base right now. Please try again in a moment.",
+            "is_fallback": True
+        })
 
 

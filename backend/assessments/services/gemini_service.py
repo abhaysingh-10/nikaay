@@ -24,7 +24,7 @@ class GeminiService:
             logger.warning("No GEMINI_API_KEY found in environment. Using fallback data.")
             return GeminiService._get_fallback_data(answers)
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key={api_key}"
         headers = {"Content-Type": "application/json"}
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
@@ -33,44 +33,51 @@ class GeminiService:
             }
         }
 
-        try:
-            response = requests.post(url, headers=headers, json=payload, timeout=12)
-            if response.status_code == 200:
-                result_json = response.json()
-                text_response = result_json['candidates'][0]['content']['parts'][0]['text'].strip()
-                
-               
-                start_idx = text_response.find('{')
-                end_idx = text_response.rfind('}')
-                if start_idx != -1 and end_idx != -1:
-                    text_response = text_response[start_idx:end_idx + 1]
-                
-                
-                text_response = re.sub(r',\s*([\]}])', r'\1', text_response)
-                
-                parsed = json.loads(text_response)
-                
-                required_keys = {
-                    "predicted_skin_type",
-                    "explanation",
-                    "am_routine",
-                    "pm_routine",
-                    "recommended_ingredients",
-                    "avoid_ingredients"
-                }
-                
-                if not required_keys.issubset(parsed.keys()):
-                    logger.warning(f"Gemini response missing keys: {required_keys - parsed.keys()}")
-                    return GeminiService._get_fallback_data(answers)
+        import time
+        for attempt in range(3):
+            try:
+                response = requests.post(url, headers=headers, json=payload, timeout=15)
+                if response.status_code == 200:
+                    result_json = response.json()
+                    text_response = result_json['candidates'][0]['content']['parts'][0]['text'].strip()
+                    
+                    start_idx = text_response.find('{')
+                    end_idx = text_response.rfind('}')
+                    if start_idx != -1 and end_idx != -1:
+                        text_response = text_response[start_idx:end_idx + 1]
+                    
+                    text_response = re.sub(r',\s*([\]}])', r'\1', text_response)
+                    
+                    print("GEMINI RAW TEXT:", text_response)
+                    parsed = json.loads(text_response)
+                    
+                    required_keys = {
+                        "predicted_skin_type",
+                        "explanation",
+                        "am_routine",
+                        "pm_routine",
+                        "recommended_ingredients",
+                        "avoid_ingredients"
+                    }
+                    
+                    if not required_keys.issubset(parsed.keys()):
+                        print(f"Gemini response missing keys: {required_keys - parsed.keys()}")
+                        return GeminiService._get_fallback_data(answers)
 
-                parsed["is_fallback"] = False
-                return parsed
-            else:
-                logger.warning(f"Gemini API returned status {response.status_code}: {response.text[:200]}")
+                    parsed["is_fallback"] = False
+                    return parsed
+                elif response.status_code == 503:
+                    print(f"Gemini API 503 error (attempt {attempt + 1}). Retrying...")
+                    time.sleep(1.5 ** attempt)
+                    continue
+                else:
+                    print(f"Gemini API returned status {response.status_code}: {response.text[:200]}")
+                    return GeminiService._get_fallback_data(answers)
+            except Exception as e:
+                print(f"Gemini API call failed: {e}")
                 return GeminiService._get_fallback_data(answers)
-        except Exception as e:
-            logger.error(f"Gemini API call failed: {e}", exc_info=True)
-            return GeminiService._get_fallback_data(answers)
+                
+        return GeminiService._get_fallback_data(answers)
 
     @staticmethod
     def _get_fallback_data(answers):
