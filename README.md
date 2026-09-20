@@ -1,8 +1,18 @@
 # Nikaay
 
-Nikaay is a premium, AI-powered organic skincare consultation app built to provide users with personalized skincare routines, ingredient analysis, and real-time guidance. Designed as a polished, production-ready product, Nikaay seamlessly integrates a Flutter mobile frontend with a robust Django REST Framework backend, leveraging the Google Gemini API for intelligent skin analysis.
+<p align="center">
+  <img src="https://img.shields.io/badge/Flutter-3.19%2B-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter" />
+  <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white" alt="Dart" />
+  <img src="https://img.shields.io/badge/Django-REST%20Framework-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django REST Framework" />
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Gemini_API-AI%20Powered-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Gemini API" />
+  <img src="https://img.shields.io/badge/Firebase-Auth-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
+</p>
 
----
+<p align="center">
+  <b>A production-architected, AI-powered organic skincare consultation platform.</b><br/>
+  <i>Flutter frontend, Django REST backend, Gemini-driven skin analysis built with the resilience patterns of a real product, not a portfolio demo.</i>
+</p>
 
 ## Table of Contents
 
@@ -19,12 +29,18 @@ Nikaay is a premium, AI-powered organic skincare consultation app built to provi
 
 ## Demo
 
-The GIFs below walk through the splash screen and onboarding flow. They play automatically when the README is viewed on GitHub, so no download or external player is needed.
+A quick look at the splash screen and onboarding flow, captured directly from the app.
+
+<br/>
 
 <p align="center">
   <img src="./assets/readme/gifs/splash-onboarding-1.gif" width="45%" alt="Splash and onboarding flow, part 1">
   <img src="./assets/readme/gifs/splash-onboarding-2.gif" width="45%" alt="Splash and onboarding flow, part 2">
 </p>
+
+<br/>
+
+
 
 ---
 
