@@ -66,28 +66,34 @@ A quick look at the splash screen and onboarding flow, captured directly from th
 
 ---
 
-## Key Features
+## System Architecture & Design
 
-**Personalized AI Skin Analysis**
-Users complete a comprehensive multi-step assessment, which is processed by Google's Gemini LLM to generate custom morning and evening routines along with ingredient recommendations tailored to their skin profile.
+To demonstrate production-readiness, Nikaay is built using several core system design principles:
 
-**Intelligent Skincare Chatbot**
-A real-time AI assistant that answers skincare questions with contextual awareness of the user's prior assessments and stated concerns.
+- **Client-Server Architecture:** The Flutter frontend and Django backend are completely decoupled, communicating purely via stateless REST APIs.
 
-**Secure Authentication**
-Firebase Authentication (Email/Password) is used on the client and verified server-side via the Firebase Admin SDK, keeping session handling and identity checks in sync between the app and the backend.
+- **Feature-First Architecture (Frontend):** UI, domain models, and data repositories are grouped by feature (e.g., `auth`, `assessment`), making the codebase highly modular and scalable.
 
-**Consultation History**
-Users can review past assessments and track how their skin has changed over time, giving the AI analysis a longitudinal dimension rather than a single snapshot.
+- **Delegated Authentication:** Firebase securely manages credentials and tokens, which are then passed to Django for validation. This offloads identity risks to Google's infrastructure.
 
-**Secure File and Report Uploads**
-Users can safely upload prior dermatology reports and prescriptions, with support for both images and documents, so recommendations can account for existing medical context.
+- **Graceful Degradation:** If the third-party Gemini API fails or times out, the backend gracefully falls back to a curated offline dataset instead of crashing the client.
 
-**Educational Content Hub**
-Curated articles covering ingredients, routines, and organic skincare practices, giving users a reference point beyond their personalized plan.
+- **API Boundary Protection:** Strict rate-limiting (throttling) is applied to the AI endpoints to prevent abusive traffic and unbounded inference costs.
 
-**Premium UI and UX**
-A clean, organic design system built on Material 3 guidelines, with fluid animations and a layout that adapts responsively across device sizes.
+- **Defensive Parsing:** Server-side schema validation and regex-based parsing ensure that probabilistic LLM outputs never crash the mobile app with malformed JSON.
+
+---
+
+## Engineering and Production Considerations
+
+Nikaay is architected with production resilience and cost-awareness in mind, rather than as a bare-minimum demo:
+
+- **API-Level Throttling** — Protects against runaway AI service costs from repeated or abusive requests using DRF's `ScopedRateThrottle`.
+- **Graceful Degradation** — Falls back to curated skincare data if the AI service fails, with structured logging for observability into when and why fallbacks occur.
+- **Defensive LLM Parsing** — Uses pattern-based regex extraction rather than naive string splitting, to handle variability in LLM-generated JSON output.
+- **Strict Schema Validation** — Server-side schema validation ensures the mobile app never receives malformed AI responses, catching errors at the API boundary instead of the client.
+- **Cross-Platform Network Client** — Built without top-level `dart:io` dependencies, enabling the same networking code to compile for Flutter Web alongside iOS and Android.
+- **Transparent AI Telemetry** — Explicit fallback flags (`is_fallback`) ensure degraded or offline responses are tracked in the database for auditing, so it's always clear which recommendations came from the model versus the fallback dataset.
 
 ---
 
@@ -114,16 +120,28 @@ A clean, organic design system built on Material 3 guidelines, with fluid animat
 
 ---
 
-## Engineering and Production Considerations
+## Key Features
 
-Nikaay is architected with production resilience and cost-awareness in mind, rather than as a bare-minimum demo:
+**Personalized AI Skin Analysis**
+Users complete a comprehensive multi-step assessment, which is processed by Google's Gemini LLM to generate custom morning and evening routines along with ingredient recommendations tailored to their skin profile.
 
-- **API-Level Throttling** — Protects against runaway AI service costs from repeated or abusive requests using DRF's `ScopedRateThrottle`.
-- **Graceful Degradation** — Falls back to curated skincare data if the AI service fails, with structured logging for observability into when and why fallbacks occur.
-- **Defensive LLM Parsing** — Uses pattern-based regex extraction rather than naive string splitting, to handle variability in LLM-generated JSON output.
-- **Strict Schema Validation** — Server-side schema validation ensures the mobile app never receives malformed AI responses, catching errors at the API boundary instead of the client.
-- **Cross-Platform Network Client** — Built without top-level `dart:io` dependencies, enabling the same networking code to compile for Flutter Web alongside iOS and Android.
-- **Transparent AI Telemetry** — Explicit fallback flags (`is_fallback`) ensure degraded or offline responses are tracked in the database for auditing, so it's always clear which recommendations came from the model versus the fallback dataset.
+**Intelligent Skincare Chatbot**
+A real-time AI assistant that answers skincare questions with contextual awareness of the user's prior assessments and stated concerns.
+
+**Secure Authentication**
+Firebase Authentication (Email/Password) is used on the client and verified server-side via the Firebase Admin SDK, keeping session handling and identity checks in sync between the app and the backend.
+
+**Consultation History**
+Users can review past assessments and track how their skin has changed over time, giving the AI analysis a longitudinal dimension rather than a single snapshot.
+
+**Secure File and Report Uploads**
+Users can safely upload prior dermatology reports and prescriptions, with support for both images and documents, so recommendations can account for existing medical context.
+
+**Educational Content Hub**
+Curated articles covering ingredients, routines, and organic skincare practices, giving users a reference point beyond their personalized plan.
+
+**Premium UI and UX**
+A clean, organic design system built on Material 3 guidelines, with fluid animations and a layout that adapts responsively across device sizes.
 
 ---
 
