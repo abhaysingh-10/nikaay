@@ -26,11 +26,6 @@ The GIFs below walk through the splash screen and onboarding flow. They play aut
   <img src="./assets/readme/gifs/splash-onboarding-2.gif" width="45%" alt="Splash and onboarding flow, part 2">
 </p>
 
-If you prefer the full-resolution version with audio, the original screen recordings are available here:
-
-- [Full walkthrough, part 1](./assets/readme/screenrecord/screen-recording-1.mov)
-- [Full walkthrough, part 2](./assets/readme/screenrecord/screen-recording-2.mov)
-
 ---
 
 ## Screenshots
