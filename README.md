@@ -89,10 +89,15 @@ To demonstrate production-readiness, Nikaay is built using several core system d
 Nikaay is architected with production resilience and cost-awareness in mind, rather than as a bare-minimum demo:
 
 - **API-Level Throttling** — Protects against runaway AI service costs from repeated or abusive requests using DRF's `ScopedRateThrottle`.
+
 - **Graceful Degradation** — Falls back to curated skincare data if the AI service fails, with structured logging for observability into when and why fallbacks occur.
+
 - **Defensive LLM Parsing** — Uses pattern-based regex extraction rather than naive string splitting, to handle variability in LLM-generated JSON output.
+
 - **Strict Schema Validation** — Server-side schema validation ensures the mobile app never receives malformed AI responses, catching errors at the API boundary instead of the client.
+
 - **Cross-Platform Network Client** — Built without top-level `dart:io` dependencies, enabling the same networking code to compile for Flutter Web alongside iOS and Android.
+
 - **Transparent AI Telemetry** — Explicit fallback flags (`is_fallback`) ensure degraded or offline responses are tracked in the database for auditing, so it's always clear which recommendations came from the model versus the fallback dataset.
 
 ---
@@ -122,26 +127,26 @@ Nikaay is architected with production resilience and cost-awareness in mind, rat
 
 ## Key Features
 
-**Personalized AI Skin Analysis**
-Users complete a comprehensive multi-step assessment, which is processed by Google's Gemini LLM to generate custom morning and evening routines along with ingredient recommendations tailored to their skin profile.
+- **Personalized AI Skin Analysis**  
+  Users complete a comprehensive multi-step assessment, which is processed by Google's Gemini LLM to generate custom morning and evening routines along with ingredient recommendations tailored to their skin profile.
 
-**Intelligent Skincare Chatbot**
-A real-time AI assistant that answers skincare questions with contextual awareness of the user's prior assessments and stated concerns.
+- **Intelligent Skincare Chatbot**  
+  A real-time AI assistant that answers skincare questions with contextual awareness of the user's prior assessments and stated concerns.
 
-**Secure Authentication**
-Firebase Authentication (Email/Password) is used on the client and verified server-side via the Firebase Admin SDK, keeping session handling and identity checks in sync between the app and the backend.
+- **Secure Authentication**  
+  Firebase Authentication (Email/Password) is used on the client and verified server-side via the Firebase Admin SDK, keeping session handling and identity checks in sync between the app and the backend.
 
-**Consultation History**
-Users can review past assessments and track how their skin has changed over time, giving the AI analysis a longitudinal dimension rather than a single snapshot.
+- **Consultation History**  
+  Users can review past assessments and track how their skin has changed over time, giving the AI analysis a longitudinal dimension rather than a single snapshot.
 
-**Secure File and Report Uploads**
-Users can safely upload prior dermatology reports and prescriptions, with support for both images and documents, so recommendations can account for existing medical context.
+- **Secure File and Report Uploads**  
+  Users can safely upload prior dermatology reports and prescriptions, with support for both images and documents, so recommendations can account for existing medical context.
 
-**Educational Content Hub**
-Curated articles covering ingredients, routines, and organic skincare practices, giving users a reference point beyond their personalized plan.
+- **Educational Content Hub**  
+  Curated articles covering ingredients, routines, and organic skincare practices, giving users a reference point beyond their personalized plan.
 
-**Premium UI and UX**
-A clean, organic design system built on Material 3 guidelines, with fluid animations and a layout that adapts responsively across device sizes.
+- **Premium UI and UX**  
+  A clean, organic design system built on Material 3 guidelines, with fluid animations and a layout that adapts responsively across device sizes.
 
 ---
 
