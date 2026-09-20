@@ -416,16 +416,23 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 50,
-        width: 84,
+        height: 56,
+        width: 80,
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.secondaryText.withOpacity(0.12)),
+          color: AppColors.lightBeige.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: AppColors.primaryGreen.withOpacity(0.1),
+            width: 1,
+          ),
         ),
         child: Center(
-          child:
-              Image.asset(logoPath, height: 20, width: 20, fit: BoxFit.contain),
+          child: Image.asset(
+            logoPath,
+            height: 24,
+            width: 24,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );

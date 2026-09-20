@@ -44,7 +44,7 @@ The GIFs below walk through the splash screen and onboarding flow. They play aut
 </p>
 <p align="center">
   <img src="./assets/readme/screenshots/simulator_screenshot_C7C7B41E-CCB7-4D7C-9CF2-A599CADB92A3.png" width="22%" alt="Screen 9">
-  <img src="./assets/readme/screenshots/Simulator%20Screenshot%20-%20iPhone%2017%20-%202026-09-20%20at%2015.19.18.png" width="22%" alt="Screen 10">
+  <img src="./assets/readme/screenshots/simulator_screenshot_B882D595-B576-41EA-BACA-934BDBA3BE40.png" width="22%" alt="Screen 10">
   <img src="./assets/readme/screenshots/simulator_screenshot_E6ED642C-9A3B-4805-A091-19C912F348A7.png" width="22%" alt="Screen 11">
 </p>
 
