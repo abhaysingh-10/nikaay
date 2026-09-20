@@ -64,26 +64,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         color: AppColors.secondaryText.withOpacity(0.45),
       ),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: AppColors.lightBeige.withOpacity(0.8),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide:
-            BorderSide(color: AppColors.secondaryText.withOpacity(0.12)),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide:
-            BorderSide(color: AppColors.secondaryText.withOpacity(0.12)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: AppColors.primaryGreen, width: 1.4),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Colors.redAccent, width: 1),
-      ),
-      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 4),
     );
   }
 
