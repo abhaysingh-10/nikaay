@@ -221,4 +221,4 @@ flutter run
 
 ---
 
-*Designed and developed as a premium internship assessment project.*
+*Designed and developed as a  internship assessment project.*
